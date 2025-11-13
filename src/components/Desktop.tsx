@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import DesktopIcon from './DesktopIcon';
+import styles from './Desktop.module.scss';
+import Taskbar from './Taskbar';
 
 export default function Desktop() {
     const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
@@ -26,16 +28,10 @@ export default function Desktop() {
 
     return (
         <div
-            className="relative h-screen w-full overflow-hidden bg-[#58a6de] cursor-default"
-            style={{
-                backgroundImage: 'url(/images/background.jpeg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                fontFamily: 'Tahoma, sans-serif',
-            }}
+            className={styles.desktop}
             onClick={handleDesktopClick}
         >
-            <div className="absolute top-5 left-5 flex flex-col gap-6">
+            <div className={styles.iconsContainer}>
                 {desktopIcons.map((icon) => (
                     <DesktopIcon
                         key={icon.id}
@@ -48,6 +44,7 @@ export default function Desktop() {
                     />
                 ))}
             </div>
+            <Taskbar />
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import './globals.scss';
 
 export const metadata: Metadata = {
   title: 'Connor Hutchinson - Senior Software Engineer',
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="m-0 p-0 overflow-hidden">
+      <body>
         {children}
       </body>
     </html>

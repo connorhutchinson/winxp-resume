@@ -1,0 +1,54 @@
+.icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 5rem; // w-20
+  padding: 0.5rem; // p-2
+  border-radius: 0.25rem; // rounded
+  cursor: pointer;
+  transition: all 200ms;
+}
+
+.iconSelected {
+  background-color: rgba(51, 153, 255, 0.4);
+  border: 1px dotted white;
+}
+
+.iconUnselected {
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 1px dotted rgba(255, 255, 255, 0.6);
+  }
+}
+
+.iconImage {
+  width: 2rem; // w-8
+  height: 2rem; // h-8
+  margin-bottom: 0.25rem; // mb-1
+  border-radius: 0.25rem; // rounded
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem; // text-sm
+  font-weight: bold;
+  color: #0066cc;
+  background: linear-gradient(to bottom right, white, #e0e0e0);
+  border: 1px solid #999;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.iconImageInner {
+  object-fit: contain;
+}
+
+.iconLabel {
+  color: white;
+  font-size: 11px; // text-[11px]
+  text-align: center;
+  word-break: break-word;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 0.125rem 0.25rem; // px-1 py-0.5
+  border-radius: 0.125rem; // rounded-sm
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
