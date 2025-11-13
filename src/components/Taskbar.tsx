@@ -3,8 +3,22 @@
 import { useState, useEffect } from 'react';
 import styles from './Taskbar.module.scss';
 import StartMenu from './StartMenu';
+import { WindowState } from './Desktop';
 
-export default function Taskbar() {
+interface DesktopIcon {
+    id: string;
+    label: string;
+    imageUrl: string;
+}
+
+interface TaskbarProps {
+    windows: WindowState[];
+    activeWindowId: string | null;
+    onTaskbarButtonClick: (windowId: string) => void;
+    desktopIcons: DesktopIcon[];
+}
+
+export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons }: TaskbarProps) {
     const [time, setTime] = useState('');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
@@ -29,6 +43,16 @@ export default function Taskbar() {
         setIsStartMenuOpen(!isStartMenuOpen);
     };
 
+    const handleTaskbarButtonClick = (e: React.MouseEvent, windowId: string) => {
+        e.stopPropagation();
+        onTaskbarButtonClick(windowId);
+    };
+
+    const getIconForWindow = (windowId: string) => {
+        const icon = desktopIcons.find(i => i.id === windowId);
+        return icon?.imageUrl || '/images/pdf.svg';
+    };
+
     return (
         <>
             <div className={styles.taskbar}>
@@ -37,7 +61,32 @@ export default function Taskbar() {
                 </button>
 
                 <div className={styles.taskbarApps}>
-                    {/* Windows will be added here */}
+                    {windows.map((window) => {
+                        const isActive = activeWindowId === window.id && !window.isMinimized;
+                        const buttonClasses = [
+                            styles.taskbarButton,
+                            isActive ? styles.active : '',
+                            window.isMinimized ? styles.minimized : '',
+                        ].filter(Boolean).join(' ');
+
+                        return (
+                            <button
+                                key={window.id}
+                                className={buttonClasses}
+                                onClick={(e) => handleTaskbarButtonClick(e, window.id)}
+                            >
+                                <div className={styles.buttonIcon}>
+                                    <img
+                                        src={getIconForWindow(window.id)}
+                                        alt={window.title}
+                                        width={16}
+                                        height={16}
+                                    />
+                                </div>
+                                <span className={styles.buttonText}>{window.title}</span>
+                            </button>
+                        );
+                    })}
                 </div>
 
                 <div className={styles.systemTray}>

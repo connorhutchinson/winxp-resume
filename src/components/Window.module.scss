@@ -1,0 +1,113 @@
+.window {
+  position: absolute;
+  background: linear-gradient(to bottom, #e8e8e8 0%, #d4d4d4 100%);
+  border: 2px outset #e8e8e8;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  font-family: Tahoma, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  min-width: 300px;
+  min-height: 200px;
+
+  &.maximized {
+    border-radius: 0;
+    border: none;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 40px) !important;
+  }
+
+  &.minimized {
+    display: none;
+  }
+}
+
+.titleBar {
+  height: 28px;
+  background: linear-gradient(to bottom, #245edc 0%, #1941c4 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  cursor: move;
+  user-select: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.title {
+  flex: 1;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 0 8px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.windowControls {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.controlButton {
+  width: 20px;
+  height: 20px;
+  border: 1px outset #e8e8e8;
+  background: linear-gradient(to bottom, #e8e8e8 0%, #d4d4d4 100%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  &:hover {
+    background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+  }
+
+  &:active {
+    border: 1px inset #e8e8e8;
+    background: linear-gradient(to bottom, #d4d4d4 0%, #c0c0c0 100%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+    stroke: #000;
+    fill: none;
+  }
+
+  &.closeButton {
+    &:hover {
+      background: linear-gradient(to bottom, #ff4444 0%, #cc0000 100%);
+      
+      svg {
+        stroke: white;
+      }
+    }
+
+    &:active {
+      background: linear-gradient(to bottom, #cc0000 0%, #990000 100%);
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 8px;
+  overflow: auto;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
