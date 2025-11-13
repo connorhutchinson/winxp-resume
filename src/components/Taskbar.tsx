@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import styles from './Taskbar.module.scss';
+import StartMenu from './StartMenu';
 
 export default function Taskbar() {
     const [time, setTime] = useState('');
+    const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
     useEffect(() => {
         const updateTime = () => {
@@ -22,24 +24,36 @@ export default function Taskbar() {
         return () => clearInterval(interval);
     }, []);
 
+    const handleStartClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsStartMenuOpen(!isStartMenuOpen);
+    };
+
     return (
-        <div className={styles.taskbar}>
-            <button className={styles.startButton}>
-                <div className={styles.startLogo}>⊞</div>
-                <span>Start</span>
-            </button>
+        <>
+            <div className={styles.taskbar}>
+                <button className={styles.startButton} onClick={handleStartClick}>
+                    <span>Start</span>
+                </button>
 
-            <div className={styles.taskbarApps}>
-                {/* Windows will be added here */}
-            </div>
+                <div className={styles.taskbarApps}>
+                    {/* Windows will be added here */}
+                </div>
 
-            <div className={styles.systemTray}>
-                <div className={styles.trayIcon}>VOL</div>
-                <div className={styles.trayIcon}>NET</div>
-                <div className={styles.trayIcon}>SEC</div>
-                <div className={styles.trayIcon}>UPD</div>
-                <div className={styles.time}>{time}</div>
+                <div className={styles.systemTray}>
+                    <div className={styles.trayIcon}>
+                        <img src="/images/volume.svg" alt="Volume" width={16} height={16} />
+                    </div>
+                    <div className={styles.trayIcon}>
+                        <img src="/images/network.svg" alt="Network" width={16} height={16} />
+                    </div>
+                    <div className={styles.trayIcon}>
+                        <img src="/images/messenger.svg" alt="Messenger" width={16} height={16} />
+                    </div>
+                    <div className={styles.time}>{time}</div>
+                </div>
             </div>
-        </div>
+            <StartMenu isOpen={isStartMenuOpen} onClose={() => setIsStartMenuOpen(false)} />
+        </>
     );
 }

@@ -1,0 +1,20 @@
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Head shape -->
+  <ellipse cx="8" cy="7" rx="5" ry="5.5" fill="#00A300" stroke="#006600" stroke-width="0.5"/>
+  
+  <!-- Face outline -->
+  <ellipse cx="8" cy="7" rx="4.5" ry="5" fill="#00CC00" stroke="#006600" stroke-width="0.3"/>
+  
+  <!-- Eyes -->
+  <circle cx="6.5" cy="6" r="0.8" fill="#FFFFFF"/>
+  <circle cx="9.5" cy="6" r="0.8" fill="#FFFFFF"/>
+  <circle cx="6.5" cy="6" r="0.4" fill="#000000"/>
+  <circle cx="9.5" cy="6" r="0.4" fill="#000000"/>
+  
+  <!-- Smile -->
+  <path d="M 6 8 Q 8 9.5 10 8" stroke="#006600" stroke-width="1" fill="none" stroke-linecap="round"/>
+  
+  <!-- Hair/head detail -->
+  <ellipse cx="8" cy="4.5" rx="3" ry="2" fill="#00A300"/>
+</svg>
+
