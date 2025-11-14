@@ -188,6 +188,7 @@ export default function Window({
         isMaximized ? styles.maximized : '',
         isAnimatingMinimize ? styles.minimizing : '',
         isAnimatingRestore ? styles.restoring : '',
+        isDragging ? styles.dragging : '',
     ].filter(Boolean).join(' ');
 
     return (
