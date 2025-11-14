@@ -3,12 +3,20 @@
 import { useEffect } from 'react';
 import styles from './StartMenu.module.scss';
 
+interface DesktopIcon {
+    id: string;
+    label: string;
+    imageUrl: string;
+}
+
 interface StartMenuProps {
     isOpen: boolean;
     onClose: () => void;
+    desktopIcons: DesktopIcon[];
+    onIconClick: (iconId: string) => void;
 }
 
-export default function StartMenu({ isOpen, onClose }: StartMenuProps) {
+export default function StartMenu({ isOpen, onClose, desktopIcons, onIconClick }: StartMenuProps) {
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) {
@@ -24,6 +32,11 @@ export default function StartMenu({ isOpen, onClose }: StartMenuProps) {
         }
     }, [isOpen, onClose]);
 
+    const handleMenuItemClick = (iconId: string) => {
+        onIconClick(iconId);
+        onClose();
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -35,7 +48,23 @@ export default function StartMenu({ isOpen, onClose }: StartMenuProps) {
                 </div>
                 <div className={styles.content}>
                     <div className={styles.leftColumn}>
-                        {/* Apps will be added here */}
+                        {desktopIcons.map((icon) => (
+                            <button
+                                key={icon.id}
+                                className={styles.menuItem}
+                                onClick={() => handleMenuItemClick(icon.id)}
+                            >
+                                <div className={styles.menuIcon}>
+                                    <img
+                                        src={icon.imageUrl}
+                                        alt={icon.label}
+                                        width={20}
+                                        height={20}
+                                    />
+                                </div>
+                                <span className={styles.menuLabel}>{icon.label}</span>
+                            </button>
+                        ))}
                     </div>
                     <div className={styles.rightColumn}>
                         {/* System links will be added here */}

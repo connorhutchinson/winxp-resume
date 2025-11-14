@@ -5,6 +5,7 @@ import DesktopIcon from './DesktopIcon';
 import styles from './Desktop.module.scss';
 import Taskbar from './Taskbar';
 import Window from './Window';
+import ChatWindow from './ChatWindow';
 
 export interface WindowState {
     id: string;
@@ -125,16 +126,7 @@ export default function Desktop() {
     const getWindowContent = (windowId: string) => {
         switch (windowId) {
             case 'chat':
-                return (
-                    <div style={{ padding: '20px' }}>
-                        <h2 style={{ marginBottom: '16px', fontSize: '14px', fontWeight: 'bold' }}>
-                            Chat with my resume
-                        </h2>
-                        <p style={{ fontSize: '11px', lineHeight: '1.5' }}>
-                            This is a demo window. You can drag it around, minimize, maximize, and close it!
-                        </p>
-                    </div>
-                );
+                return <ChatWindow />;
             case 'resume':
                 return (
                     <div style={{ padding: '20px' }}>
@@ -196,6 +188,8 @@ export default function Desktop() {
                     onFocus={() => bringWindowToFront(window.id)}
                     initialX={100 + windows.indexOf(window) * 30}
                     initialY={100 + windows.indexOf(window) * 30}
+                    initialWidth={window.id === 'chat' ? 500 : undefined}
+                    initialHeight={window.id === 'chat' ? 400 : undefined}
                 >
                     {getWindowContent(window.id)}
                 </Window>
@@ -206,6 +200,7 @@ export default function Desktop() {
                 activeWindowId={getActiveWindowId()}
                 onTaskbarButtonClick={handleTaskbarButtonClick}
                 desktopIcons={desktopIcons}
+                onIconDoubleClick={handleIconDoubleClick}
             />
         </div>
     );

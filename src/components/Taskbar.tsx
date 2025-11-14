@@ -16,9 +16,10 @@ interface TaskbarProps {
     activeWindowId: string | null;
     onTaskbarButtonClick: (windowId: string) => void;
     desktopIcons: DesktopIcon[];
+    onIconDoubleClick: (iconId: string) => void;
 }
 
-export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons }: TaskbarProps) {
+export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons, onIconDoubleClick }: TaskbarProps) {
     const [time, setTime] = useState('');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
@@ -102,7 +103,12 @@ export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick,
                     <div className={styles.time}>{time}</div>
                 </div>
             </div>
-            <StartMenu isOpen={isStartMenuOpen} onClose={() => setIsStartMenuOpen(false)} />
+            <StartMenu
+                isOpen={isStartMenuOpen}
+                onClose={() => setIsStartMenuOpen(false)}
+                desktopIcons={desktopIcons}
+                onIconClick={onIconDoubleClick}
+            />
         </>
     );
 }
