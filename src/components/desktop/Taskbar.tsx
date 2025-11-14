@@ -49,10 +49,20 @@ export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick,
         onTaskbarButtonClick(windowId);
     };
 
+    const handleMessengerClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        // Open chat window if not already open, or bring it to front if it is
+        onIconDoubleClick('chat');
+    };
+
     const getIconForWindow = (windowId: string) => {
         const icon = desktopIcons.find(i => i.id === windowId);
         return icon?.imageUrl || '/images/pdf.svg';
     };
+
+    // Check if chat window is open (not minimized)
+    const isChatWindowOpen = windows.some(w => w.id === 'chat' && !w.isMinimized);
+    const messengerIcon = isChatWindowOpen ? '/images/messenger.svg' : '/images/messenger-offline.svg';
 
     return (
         <>
@@ -97,8 +107,8 @@ export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick,
                     <div className={styles.trayIcon}>
                         <img src="/images/network.svg" alt="Network" width={16} height={16} />
                     </div>
-                    <div className={styles.trayIcon}>
-                        <img src="/images/messenger.svg" alt="Messenger" width={16} height={16} />
+                    <div className={styles.trayIcon} onClick={handleMessengerClick} style={{ cursor: 'pointer' }}>
+                        <img src={messengerIcon} alt="Messenger" width={16} height={16} />
                     </div>
                     <div className={styles.time}>{time}</div>
                 </div>
