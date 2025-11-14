@@ -42,11 +42,16 @@ export default function Window({
     const [position, setPosition] = useState({ x: initialX, y: initialY });
     const [size, setSize] = useState({ width: initialWidth, height: initialHeight });
     const [isDragging, setIsDragging] = useState(false);
+    const [isAnimatingMinimize, setIsAnimatingMinimize] = useState(false);
+    const [isAnimatingRestore, setIsAnimatingRestore] = useState(false);
+    const [shouldRender, setShouldRender] = useState(true);
     const nodeRef = useRef(null);
     const savedSizeRef = useRef({ width: initialWidth, height: initialHeight });
     const savedPositionRef = useRef({ x: initialX, y: initialY });
     const prevMaximizedRef = useRef(isMaximized);
+    const prevMinimizedRef = useRef(isMinimized);
     const taskbarHeight = 40;
+    const animationDuration = 120; // ms
 
     const handleDrag = (e: DraggableEvent, data: DraggableData) => {
         if (isMaximized) return;
@@ -112,14 +117,77 @@ export default function Window({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMaximized]);
 
-    if (isMinimized) {
+    // Handle minimize/restore animation
+    useEffect(() => {
+        const wasMinimized = prevMinimizedRef.current;
+
+        if (isMinimized && !wasMinimized) {
+            // Starting minimize animation
+            setIsAnimatingMinimize(true);
+            setShouldRender(true);
+            
+            // Calculate taskbar button position (approximate center of taskbar area)
+            // Taskbar buttons are typically in the middle-left area
+            const taskbarButtonX = Math.max(100, Math.min(position.x, window.innerWidth - 200));
+            const taskbarButtonY = window.innerHeight - taskbarHeight;
+
+            // Save current position and size before animating
+            savedPositionRef.current = { ...position };
+            savedSizeRef.current = { ...size };
+
+            // Animate to taskbar position (small size near bottom)
+            setPosition({ 
+                x: taskbarButtonX, 
+                y: taskbarButtonY - 10 // Slightly above taskbar
+            });
+            setSize({ width: 1, height: 1 });
+
+            // Hide after animation completes
+            setTimeout(() => {
+                setIsAnimatingMinimize(false);
+                setShouldRender(false);
+            }, animationDuration);
+        } else if (!isMinimized && wasMinimized) {
+            // Starting restore animation
+            setIsAnimatingRestore(true);
+            setShouldRender(true);
+
+            // Start from taskbar position (small) - use similar calculation as minimize
+            const savedX = savedPositionRef.current.x || initialX;
+            const taskbarButtonX = Math.max(100, Math.min(savedX, window.innerWidth - 200));
+            const taskbarButtonY = window.innerHeight - taskbarHeight;
+            
+            setPosition({ 
+                x: taskbarButtonX, 
+                y: taskbarButtonY - 10 
+            });
+            setSize({ width: 1, height: 1 });
+
+            // After a brief moment, animate back to saved position
+            setTimeout(() => {
+                setPosition(savedPositionRef.current);
+                setSize(savedSizeRef.current);
+                
+                // Clear animation state after animation completes
+                setTimeout(() => {
+                    setIsAnimatingRestore(false);
+                }, animationDuration);
+            }, 10);
+        }
+
+        prevMinimizedRef.current = isMinimized;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isMinimized]);
+
+    if (!shouldRender && !isAnimatingMinimize && !isAnimatingRestore) {
         return null;
     }
 
     const windowClasses = [
         styles.window,
         isMaximized ? styles.maximized : '',
-        isMinimized ? styles.minimized : '',
+        isAnimatingMinimize ? styles.minimizing : '',
+        isAnimatingRestore ? styles.restoring : '',
     ].filter(Boolean).join(' ');
 
     return (
@@ -130,7 +198,7 @@ export default function Window({
             onStart={handleDragStart}
             onStop={handleDragStop}
             handle=".window-title-bar"
-            disabled={isMaximized}
+            disabled={isMaximized || isAnimatingMinimize || isAnimatingRestore}
         >
             <div
                 ref={nodeRef}

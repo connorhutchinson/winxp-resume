@@ -48,8 +48,8 @@ export default function WelcomeWindow({ onClose }: WelcomeWindowProps) {
                 </div>
 
                 <div className={styles.footer}>
-                    <button 
-                        className={styles.okButton} 
+                    <button
+                        className={styles.okButton}
                         onClick={(e) => {
                             e.stopPropagation();
                             onClose();
