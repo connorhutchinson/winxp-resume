@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DesktopIcon from './DesktopIcon';
 import styles from './Desktop.module.scss';
 import Taskbar from './Taskbar';
-import Window from './Window';
-import ChatWindow from './ChatWindow';
+import Window from '../windows/Window';
+import ChatWindow from '../windows/ChatWindow';
+import WelcomeWindow from '../windows/WelcomeWindow';
 
 export interface WindowState {
     id: string;
@@ -15,15 +16,40 @@ export interface WindowState {
     zIndex: number;
 }
 
+const WELCOME_WINDOW_ID = 'welcome';
+const WELCOME_CLOSED_KEY = 'welcomeWindowClosed';
+
 export default function Desktop() {
     const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
     const [windows, setWindows] = useState<WindowState[]>([]);
     const [maxZIndex, setMaxZIndex] = useState(1000);
 
+    // Check if welcome window should be shown on mount
+    useEffect(() => {
+        const welcomeClosed = localStorage.getItem(WELCOME_CLOSED_KEY);
+        if (!welcomeClosed && typeof window !== 'undefined') {
+            // Show welcome window centered on screen
+            setWindows([{
+                id: WELCOME_WINDOW_ID,
+                title: 'Welcome!',
+                isMinimized: false,
+                isMaximized: false,
+                zIndex: maxZIndex + 1,
+            }]);
+            setMaxZIndex(maxZIndex + 1);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const desktopIcons = [
         { id: 'chat', label: 'Chat with my resume', imageUrl: '/images/pdf.svg' },
         { id: 'resume', label: 'Resume.pdf', imageUrl: '/images/pdf.svg' },
         { id: 'contact', label: 'Contact Me', imageUrl: '/images/pdf.svg' },
+    ];
+
+    const startMenuItems = [
+        ...desktopIcons,
+        { id: WELCOME_WINDOW_ID, label: 'Welcome', imageUrl: '/images/pdf.svg' },
     ];
 
     const handleIconClick = (iconId: string) => {
@@ -47,7 +73,7 @@ export default function Desktop() {
             }
         } else {
             // Create new window
-            const icon = desktopIcons.find(i => i.id === iconId);
+            const icon = startMenuItems.find(i => i.id === iconId);
             if (icon) {
                 setWindows([...windows, {
                     id: iconId,
@@ -102,6 +128,10 @@ export default function Desktop() {
     };
 
     const handleWindowClose = (windowId: string) => {
+        if (windowId === WELCOME_WINDOW_ID) {
+            // Save to localStorage that welcome window has been closed
+            localStorage.setItem(WELCOME_CLOSED_KEY, 'true');
+        }
         setWindows(windows.filter(w => w.id !== windowId));
     };
 
@@ -125,6 +155,8 @@ export default function Desktop() {
 
     const getWindowContent = (windowId: string) => {
         switch (windowId) {
+            case WELCOME_WINDOW_ID:
+                return <WelcomeWindow onClose={() => handleWindowClose(WELCOME_WINDOW_ID)} />;
             case 'chat':
                 return <ChatWindow />;
             case 'resume':
@@ -173,33 +205,57 @@ export default function Desktop() {
                 ))}
             </div>
 
-            {windows.map((window) => (
-                <Window
-                    key={window.id}
-                    id={window.id}
-                    title={window.title}
-                    isMinimized={window.isMinimized}
-                    isMaximized={window.isMaximized}
-                    zIndex={window.zIndex}
-                    onClose={() => handleWindowClose(window.id)}
-                    onMinimize={() => handleWindowMinimize(window.id)}
-                    onMaximize={() => handleWindowMaximize(window.id)}
-                    onRestore={() => handleWindowRestore(window.id)}
-                    onFocus={() => bringWindowToFront(window.id)}
-                    initialX={100 + windows.indexOf(window) * 30}
-                    initialY={100 + windows.indexOf(window) * 30}
-                    initialWidth={window.id === 'chat' ? 500 : undefined}
-                    initialHeight={window.id === 'chat' ? 400 : undefined}
-                >
-                    {getWindowContent(window.id)}
-                </Window>
-            ))}
+            {windows.map((win) => {
+                // Calculate initial position and size
+                let initialX = 100 + windows.indexOf(win) * 30;
+                let initialY = 100 + windows.indexOf(win) * 30;
+                let initialWidth: number | undefined = undefined;
+                let initialHeight: number | undefined = undefined;
+
+                if (win.id === WELCOME_WINDOW_ID) {
+                    // Center welcome window on screen
+                    if (typeof window !== 'undefined') {
+                        initialX = Math.max(100, (window.innerWidth - 500) / 2);
+                        initialY = Math.max(100, (window.innerHeight - 400) / 2);
+                    } else {
+                        initialX = 150;
+                        initialY = 150;
+                    }
+                    initialWidth = 500;
+                    initialHeight = 400;
+                } else if (win.id === 'chat') {
+                    initialWidth = 500;
+                    initialHeight = 400;
+                }
+
+                return (
+                    <Window
+                        key={win.id}
+                        id={win.id}
+                        title={win.title}
+                        isMinimized={win.isMinimized}
+                        isMaximized={win.isMaximized}
+                        zIndex={win.zIndex}
+                        onClose={() => handleWindowClose(win.id)}
+                        onMinimize={() => handleWindowMinimize(win.id)}
+                        onMaximize={() => handleWindowMaximize(win.id)}
+                        onRestore={() => handleWindowRestore(win.id)}
+                        onFocus={() => bringWindowToFront(win.id)}
+                        initialX={initialX}
+                        initialY={initialY}
+                        initialWidth={initialWidth}
+                        initialHeight={initialHeight}
+                    >
+                        {getWindowContent(win.id)}
+                    </Window>
+                );
+            })}
 
             <Taskbar
                 windows={windows}
                 activeWindowId={getActiveWindowId()}
                 onTaskbarButtonClick={handleTaskbarButtonClick}
-                desktopIcons={desktopIcons}
+                desktopIcons={startMenuItems}
                 onIconDoubleClick={handleIconDoubleClick}
             />
         </div>
