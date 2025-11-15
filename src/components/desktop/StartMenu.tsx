@@ -9,14 +9,21 @@ interface DesktopIcon {
     imageUrl: string;
 }
 
+interface SystemLink {
+    id: string;
+    label: string;
+    imageUrl: string;
+}
+
 interface StartMenuProps {
     isOpen: boolean;
     onClose: () => void;
     desktopIcons: DesktopIcon[];
+    systemLinks: SystemLink[];
     onIconClick: (iconId: string) => void;
 }
 
-export default function StartMenu({ isOpen, onClose, desktopIcons, onIconClick }: StartMenuProps) {
+export default function StartMenu({ isOpen, onClose, desktopIcons, systemLinks, onIconClick }: StartMenuProps) {
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) {
@@ -67,7 +74,25 @@ export default function StartMenu({ isOpen, onClose, desktopIcons, onIconClick }
                         ))}
                     </div>
                     <div className={styles.rightColumn}>
-                        {/* System links will be added here */}
+                        <div className={styles.systemLinks}>
+                            {systemLinks.map((link) => (
+                                <button
+                                    key={link.id}
+                                    className={styles.systemLink}
+                                    onClick={() => handleMenuItemClick(link.id)}
+                                >
+                                    <div className={styles.systemIcon}>
+                                        <img
+                                            src={link.imageUrl}
+                                            alt={link.label}
+                                            width={20}
+                                            height={20}
+                                        />
+                                    </div>
+                                    <span className={styles.systemLabel}>{link.label}</span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

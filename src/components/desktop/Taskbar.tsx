@@ -11,15 +11,22 @@ interface DesktopIcon {
     imageUrl: string;
 }
 
+interface SystemLink {
+    id: string;
+    label: string;
+    imageUrl: string;
+}
+
 interface TaskbarProps {
     windows: WindowState[];
     activeWindowId: string | null;
     onTaskbarButtonClick: (windowId: string) => void;
     desktopIcons: DesktopIcon[];
+    systemLinks: SystemLink[];
     onIconDoubleClick: (iconId: string) => void;
 }
 
-export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons, onIconDoubleClick }: TaskbarProps) {
+export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons, systemLinks, onIconDoubleClick }: TaskbarProps) {
     const [time, setTime] = useState('');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
@@ -117,6 +124,7 @@ export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick,
                 isOpen={isStartMenuOpen}
                 onClose={() => setIsStartMenuOpen(false)}
                 desktopIcons={desktopIcons}
+                systemLinks={systemLinks}
                 onIconClick={onIconDoubleClick}
             />
         </>

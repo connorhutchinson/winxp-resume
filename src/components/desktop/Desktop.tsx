@@ -7,6 +7,7 @@ import Taskbar from './Taskbar';
 import Window from '../windows/Window';
 import ChatWindow from '../windows/ChatWindow';
 import WelcomeWindow from '../windows/WelcomeWindow';
+import SettingsWindow from '../windows/SettingsWindow';
 
 export interface WindowState {
     id: string;
@@ -17,15 +18,25 @@ export interface WindowState {
 }
 
 const WELCOME_WINDOW_ID = 'welcome';
+const SETTINGS_WINDOW_ID = 'settings';
 const WELCOME_CLOSED_KEY = 'welcomeWindowClosed';
+const DESKTOP_BACKGROUND_KEY = 'desktopBackground';
 
 export default function Desktop() {
     const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
     const [windows, setWindows] = useState<WindowState[]>([]);
     const [maxZIndex, setMaxZIndex] = useState(1000);
+    const [desktopBackground, setDesktopBackground] = useState<string>('/images/background.jpeg');
 
-    // Check if welcome window should be shown on mount
+    // Check if welcome window should be shown on mount and load saved background
     useEffect(() => {
+        // Load saved background
+        const savedBackground = localStorage.getItem(DESKTOP_BACKGROUND_KEY);
+        if (savedBackground) {
+            setDesktopBackground(savedBackground);
+        }
+
+        // Show welcome window if not closed before
         const welcomeClosed = localStorage.getItem(WELCOME_CLOSED_KEY);
         if (!welcomeClosed && typeof window !== 'undefined') {
             // Show welcome window centered on screen
@@ -52,6 +63,10 @@ export default function Desktop() {
         { id: WELCOME_WINDOW_ID, label: 'Welcome', imageUrl: '/images/pdf.svg' },
     ];
 
+    const systemLinks = [
+        { id: SETTINGS_WINDOW_ID, label: 'Control Panel', imageUrl: '/images/network.svg' },
+    ];
+
     const handleIconClick = (iconId: string) => {
         setSelectedIcon(iconId);
     };
@@ -73,11 +88,16 @@ export default function Desktop() {
             }
         } else {
             // Create new window
-            const icon = startMenuItems.find(i => i.id === iconId);
+            const allItems = [...startMenuItems, ...systemLinks];
+            const icon = allItems.find(i => i.id === iconId);
             if (icon) {
+                let title = icon.label;
+                if (iconId === SETTINGS_WINDOW_ID) {
+                    title = 'Display Properties';
+                }
                 setWindows([...windows, {
                     id: iconId,
-                    title: icon.label,
+                    title: title,
                     isMinimized: false,
                     isMaximized: false,
                     zIndex: maxZIndex + 1,
@@ -153,10 +173,22 @@ export default function Desktop() {
         ));
     };
 
+    const handleBackgroundChange = (background: string) => {
+        setDesktopBackground(background);
+        localStorage.setItem(DESKTOP_BACKGROUND_KEY, background);
+    };
+
     const getWindowContent = (windowId: string) => {
         switch (windowId) {
             case WELCOME_WINDOW_ID:
                 return <WelcomeWindow onClose={() => handleWindowClose(WELCOME_WINDOW_ID)} />;
+            case SETTINGS_WINDOW_ID:
+                return (
+                    <SettingsWindow
+                        currentBackground={desktopBackground}
+                        onBackgroundChange={handleBackgroundChange}
+                    />
+                );
             case 'chat':
                 return <ChatWindow />;
             case 'resume':
@@ -186,9 +218,19 @@ export default function Desktop() {
         }
     };
 
+    const getDesktopStyle = () => {
+        if (desktopBackground.startsWith('#')) {
+            return { backgroundColor: desktopBackground };
+        }
+        return {
+            backgroundImage: `url(${desktopBackground})`,
+        };
+    };
+
     return (
         <div
             className={styles.desktop}
+            style={getDesktopStyle()}
             onClick={handleDesktopClick}
         >
             <div className={styles.iconsContainer}>
@@ -223,6 +265,17 @@ export default function Desktop() {
                     }
                     initialWidth = 500;
                     initialHeight = 400;
+                } else if (win.id === SETTINGS_WINDOW_ID) {
+                    // Center settings window on screen
+                    if (typeof window !== 'undefined') {
+                        initialX = Math.max(100, (window.innerWidth - 520) / 2);
+                        initialY = Math.max(100, (window.innerHeight - 580) / 2);
+                    } else {
+                        initialX = 150;
+                        initialY = 150;
+                    }
+                    initialWidth = 520;
+                    initialHeight = 580;
                 } else if (win.id === 'chat') {
                     initialWidth = 500;
                     initialHeight = 400;
@@ -256,6 +309,7 @@ export default function Desktop() {
                 activeWindowId={getActiveWindowId()}
                 onTaskbarButtonClick={handleTaskbarButtonClick}
                 desktopIcons={startMenuItems}
+                systemLinks={systemLinks}
                 onIconDoubleClick={handleIconDoubleClick}
             />
         </div>
