@@ -142,10 +142,13 @@ export default function Window({
             // Transitioning to maximized: save current size and position
             savedSizeRef.current = { ...size };
             savedPositionRef.current = { ...position };
-            // Maximize
+            // Maximize - use dynamic viewport height on mobile to account for browser UI
+            const viewportHeight = isMobile
+                ? window.visualViewport?.height || window.innerHeight
+                : window.innerHeight;
             setSize({
                 width: window.innerWidth,
-                height: window.innerHeight - taskbarHeight,
+                height: viewportHeight - taskbarHeight,
             });
             setPosition({ x: 0, y: 0 });
         } else if (!isMaximized && wasMaximized) {
@@ -267,7 +270,13 @@ export default function Window({
                 className={windowClasses}
                 style={{
                     width: isMobile || isMaximized ? '100vw' : `${size.width}px`,
-                    height: isMobile || isMaximized ? `calc(100vh - ${taskbarHeight}px)` : `${size.height}px`,
+                    height: isMobile || isMaximized
+                        ? undefined // Let CSS handle it with top/bottom positioning
+                        : `${size.height}px`,
+                    ...(isMobile && {
+                        bottom: `calc(${taskbarHeight}px + env(safe-area-inset-bottom, 0px))`,
+                        right: 0,
+                    }),
                     zIndex,
                 }}
                 onClick={(e) => {
