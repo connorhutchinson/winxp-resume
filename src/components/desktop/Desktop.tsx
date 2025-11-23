@@ -115,6 +115,17 @@ export default function Desktop() {
             return;
         }
 
+        // Handle resume PDF download
+        if (iconId === 'resume') {
+            const link = document.createElement('a');
+            link.href = '/resources/Resume Nov 2025.pdf';
+            link.download = 'Resume Nov 2025.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            return;
+        }
+
         const allItems = [...startMenuItems, ...systemLinks];
         const icon = allItems.find(i => i.id === iconId);
 
@@ -231,17 +242,6 @@ export default function Desktop() {
                 );
             case 'chat':
                 return <ChatWindow />;
-            case 'resume':
-                return (
-                    <div style={{ padding: '20px' }}>
-                        <h2 style={{ marginBottom: '16px', fontSize: '14px', fontWeight: 'bold' }}>
-                            Resume.pdf
-                        </h2>
-                        <p style={{ fontSize: '11px', lineHeight: '1.5' }}>
-                            Resume content would go here...
-                        </p>
-                    </div>
-                );
             default:
                 return <div>Window content</div>;
         }
@@ -326,6 +326,7 @@ export default function Desktop() {
                     initialWidth = 500;
                     initialHeight = 400;
                 }
+                // Resume doesn't open a window - it downloads the PDF
 
                 return (
                     <Window
