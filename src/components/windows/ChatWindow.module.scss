@@ -179,8 +179,12 @@
   background: white;
   color: #000000;
   font-family: Tahoma, sans-serif;
-  font-size: 11px;
+  font-size: 16px; // Minimum 16px to prevent zoom on iOS
   outline: none;
+  
+  @media (min-width: 769px) {
+    font-size: 11px; // Smaller font on desktop
+  }
 
   &:focus {
     border-color: #0084ff;

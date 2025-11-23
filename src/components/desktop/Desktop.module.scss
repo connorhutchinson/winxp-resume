@@ -19,3 +19,18 @@
   flex-direction: column;
   gap: 1.5rem; // gap-6
 }
+
+@media (max-width: 768px) {
+  .desktop {
+    // Ensure desktop doesn't shift on mobile
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .iconsContainer {
+    // Adjust icon spacing for mobile
+    gap: 1rem;
+  }
+}

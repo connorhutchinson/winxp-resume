@@ -32,6 +32,7 @@ export default function Desktop() {
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [showBSOD, setShowBSOD] = useState(false);
     const [bsodType, setBsodType] = useState<'shutdown' | 'restart'>('shutdown');
+    const [isMobile, setIsMobile] = useState(false);
 
     // Progressive image loading: preload the full image and swap when ready
     useEffect(() => {
@@ -60,6 +61,23 @@ export default function Desktop() {
         }
     }, [desktopBackground]);
 
+    // Detect mobile device
+    useEffect(() => {
+        const checkMobile = () => {
+            const isMobileDevice = typeof window !== 'undefined' && (
+                window.innerWidth <= 768 ||
+                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+            );
+            setIsMobile(isMobileDevice);
+        };
+
+        checkMobile();
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', checkMobile);
+            return () => window.removeEventListener('resize', checkMobile);
+        }
+    }, []);
+
     // Check if welcome window should be shown on mount and load saved background
     useEffect(() => {
         // Load saved background
@@ -71,12 +89,16 @@ export default function Desktop() {
         // Show welcome window if not closed before
         const welcomeClosed = localStorage.getItem(WELCOME_CLOSED_KEY);
         if (!welcomeClosed && typeof window !== 'undefined') {
-            // Show welcome window centered on screen
+            // Check if mobile for welcome window
+            const isMobileDevice = window.innerWidth <= 768 ||
+                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            // Show welcome window centered on screen (or maximized on mobile)
             setWindows([{
                 id: WELCOME_WINDOW_ID,
                 title: 'Welcome!',
                 isMinimized: false,
-                isMaximized: false,
+                isMaximized: isMobileDevice,
                 zIndex: maxZIndex + 1,
             }]);
             setMaxZIndex(maxZIndex + 1);
@@ -153,7 +175,7 @@ export default function Desktop() {
                     id: iconId,
                     title: title,
                     isMinimized: false,
-                    isMaximized: false,
+                    isMaximized: isMobile, // Auto-maximize on mobile
                     zIndex: maxZIndex + 1,
                 }]);
                 setMaxZIndex(maxZIndex + 1);

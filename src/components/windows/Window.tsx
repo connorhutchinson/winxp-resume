@@ -45,6 +45,7 @@ export default function Window({
     const [isAnimatingMinimize, setIsAnimatingMinimize] = useState(false);
     const [isAnimatingRestore, setIsAnimatingRestore] = useState(false);
     const [shouldRender, setShouldRender] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
     const nodeRef = useRef(null);
     const savedSizeRef = useRef({ width: initialWidth, height: initialHeight });
     const savedPositionRef = useRef({ x: initialX, y: initialY });
@@ -52,6 +53,19 @@ export default function Window({
     const prevMinimizedRef = useRef(isMinimized);
     const taskbarHeight = 40;
     const animationDuration = 120; // ms
+
+    // Detect mobile device
+    useEffect(() => {
+        const checkMobile = () => {
+            const isMobileDevice = window.innerWidth <= 768 ||
+                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            setIsMobile(isMobileDevice);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleDrag = (e: DraggableEvent, data: DraggableData) => {
         if (isMaximized) return;
@@ -81,6 +95,10 @@ export default function Window({
 
     const handleMaximize = (e: React.MouseEvent) => {
         e.stopPropagation();
+        // Prevent restore on mobile devices
+        if (isMobile && isMaximized) {
+            return;
+        }
         if (isMaximized) {
             onRestore?.();
         } else {
@@ -109,8 +127,20 @@ export default function Window({
             setPosition({ x: 0, y: 0 });
         } else if (!isMaximized && wasMaximized) {
             // Transitioning from maximized: restore saved size and position
-            setSize(savedSizeRef.current);
-            setPosition(savedPositionRef.current);
+            // Constrain size to viewport bounds
+            const maxWidth = window.innerWidth;
+            const maxHeight = window.innerHeight - taskbarHeight;
+            const constrainedWidth = Math.min(savedSizeRef.current.width, maxWidth);
+            const constrainedHeight = Math.min(savedSizeRef.current.height, maxHeight);
+
+            // Constrain position to keep window within viewport
+            const maxX = maxWidth - constrainedWidth;
+            const maxY = maxHeight - constrainedHeight;
+            const constrainedX = Math.max(0, Math.min(savedPositionRef.current.x, maxX));
+            const constrainedY = Math.max(0, Math.min(savedPositionRef.current.y, maxY));
+
+            setSize({ width: constrainedWidth, height: constrainedHeight });
+            setPosition({ x: constrainedX, y: constrainedY });
         }
 
         prevMaximizedRef.current = isMaximized;
@@ -125,7 +155,7 @@ export default function Window({
             // Starting minimize animation
             setIsAnimatingMinimize(true);
             setShouldRender(true);
-            
+
             // Calculate taskbar button position (approximate center of taskbar area)
             // Taskbar buttons are typically in the middle-left area
             const taskbarButtonX = Math.max(100, Math.min(position.x, window.innerWidth - 200));
@@ -136,8 +166,8 @@ export default function Window({
             savedSizeRef.current = { ...size };
 
             // Animate to taskbar position (small size near bottom)
-            setPosition({ 
-                x: taskbarButtonX, 
+            setPosition({
+                x: taskbarButtonX,
                 y: taskbarButtonY - 10 // Slightly above taskbar
             });
             setSize({ width: 1, height: 1 });
@@ -156,10 +186,10 @@ export default function Window({
             const savedX = savedPositionRef.current.x || initialX;
             const taskbarButtonX = Math.max(100, Math.min(savedX, window.innerWidth - 200));
             const taskbarButtonY = window.innerHeight - taskbarHeight;
-            
-            setPosition({ 
-                x: taskbarButtonX, 
-                y: taskbarButtonY - 10 
+
+            setPosition({
+                x: taskbarButtonX,
+                y: taskbarButtonY - 10
             });
             setSize({ width: 1, height: 1 });
 
@@ -167,7 +197,7 @@ export default function Window({
             setTimeout(() => {
                 setPosition(savedPositionRef.current);
                 setSize(savedSizeRef.current);
-                
+
                 // Clear animation state after animation completes
                 setTimeout(() => {
                     setIsAnimatingRestore(false);
@@ -189,6 +219,7 @@ export default function Window({
         isAnimatingMinimize ? styles.minimizing : '',
         isAnimatingRestore ? styles.restoring : '',
         isDragging ? styles.dragging : '',
+        isMobile ? styles.mobile : '',
     ].filter(Boolean).join(' ');
 
     return (
@@ -199,14 +230,14 @@ export default function Window({
             onStart={handleDragStart}
             onStop={handleDragStop}
             handle=".window-title-bar"
-            disabled={isMaximized || isAnimatingMinimize || isAnimatingRestore}
+            disabled={isMobile || isMaximized || isAnimatingMinimize || isAnimatingRestore}
         >
             <div
                 ref={nodeRef}
                 className={windowClasses}
                 style={{
-                    width: isMaximized ? '100vw' : `${size.width}px`,
-                    height: isMaximized ? `calc(100vh - ${taskbarHeight}px)` : `${size.height}px`,
+                    width: isMobile || isMaximized ? '100vw' : `${size.width}px`,
+                    height: isMobile || isMaximized ? `calc(100vh - ${taskbarHeight}px)` : `${size.height}px`,
                     zIndex,
                 }}
                 onClick={(e) => {
@@ -228,6 +259,8 @@ export default function Window({
                             className={styles.controlButton}
                             onClick={handleMaximize}
                             aria-label={isMaximized ? 'Restore' : 'Maximize'}
+                            disabled={isMobile && isMaximized}
+                            style={isMobile && isMaximized ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
                         >
                             <img
                                 src={isMaximized ? "/images/restore.svg" : "/images/maximize.svg"}
