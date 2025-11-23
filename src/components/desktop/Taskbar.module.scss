@@ -11,6 +11,13 @@
   padding: 0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
   z-index: 10000;
+
+  // Account for iOS safe area and Safari navigation bar on mobile
+  @media (max-width: 768px) {
+    position: fixed;
+    bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 .startButton {
@@ -91,7 +98,7 @@
   &.minimized {
     background: linear-gradient(to bottom, #5a9eff 0%, #1a3fb0 100%);
     border: 2px outset #5a9eff;
-    
+
     &:hover {
       background: linear-gradient(to bottom, #6aaeff 0%, #2a4fc0 100%);
     }
