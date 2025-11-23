@@ -84,7 +84,8 @@ export default function Desktop() {
     const desktopIcons = [
         { id: 'chat', label: 'Messenger', imageUrl: '/images/chat.svg' },
         { id: 'resume', label: 'Resume.pdf', imageUrl: '/images/pdf.svg' },
-        { id: 'contact', label: 'Contact Me', imageUrl: '/images/pdf.svg' },
+        { id: 'github', label: 'GitHub', imageUrl: '/images/github-svgrepo-com.svg', externalUrl: 'https://github.com/connorhutchinson' },
+        { id: 'linkedin', label: 'LinkedIn', imageUrl: '/images/linkedin-svgrepo-com.svg', externalUrl: 'https://linkedin.com/in/connor-hutchinson' },
     ];
 
     const startMenuItems = [
@@ -105,6 +106,18 @@ export default function Desktop() {
     };
 
     const handleIconDoubleClick = (iconId: string) => {
+        // Check if this is an external link icon (GitHub, LinkedIn)
+        const externalIcon = desktopIcons.find(i => i.id === iconId && i.externalUrl);
+
+        if (externalIcon && externalIcon.externalUrl) {
+            // Open external link in new tab
+            window.open(externalIcon.externalUrl, '_blank', 'noopener,noreferrer');
+            return;
+        }
+
+        const allItems = [...startMenuItems, ...systemLinks];
+        const icon = allItems.find(i => i.id === iconId);
+
         // Check if window already exists
         const existingWindow = windows.find(w => w.id === iconId);
         if (existingWindow) {
@@ -117,8 +130,6 @@ export default function Desktop() {
             }
         } else {
             // Create new window
-            const allItems = [...startMenuItems, ...systemLinks];
-            const icon = allItems.find(i => i.id === iconId);
             if (icon) {
                 let title = icon.label;
                 if (iconId === SETTINGS_WINDOW_ID) {
@@ -228,17 +239,6 @@ export default function Desktop() {
                         </h2>
                         <p style={{ fontSize: '11px', lineHeight: '1.5' }}>
                             Resume content would go here...
-                        </p>
-                    </div>
-                );
-            case 'contact':
-                return (
-                    <div style={{ padding: '20px' }}>
-                        <h2 style={{ marginBottom: '16px', fontSize: '14px', fontWeight: 'bold' }}>
-                            Contact Me
-                        </h2>
-                        <p style={{ fontSize: '11px', lineHeight: '1.5' }}>
-                            Contact information would go here...
                         </p>
                     </div>
                 );

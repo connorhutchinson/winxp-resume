@@ -9,6 +9,7 @@ interface DesktopIcon {
     id: string;
     label: string;
     imageUrl: string;
+    externalUrl?: string;
 }
 
 interface SystemLink {
