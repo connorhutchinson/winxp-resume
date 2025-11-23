@@ -24,10 +24,9 @@
   overflow: hidden;
 
   @media (max-width: 768px) {
-    // On mobile, account for Safari's navigation bar
-    // Taskbar is 40px, Safari navbar is typically 44-50px when visible
-    // Use a safe offset to ensure StartMenu is always visible above Safari's UI
-    bottom: calc(40px + 60px);
+    // On mobile, sit directly above taskbar (40px) plus Safari's safe area
+    // The taskbar itself handles the Safari navbar offset
+    bottom: calc(40px + env(safe-area-inset-bottom, 0px));
     width: 100vw;
     border-radius: 0;
   }

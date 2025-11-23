@@ -67,6 +67,29 @@ export default function Window({
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    // Constrain window position to ensure it doesn't overlap with taskbar
+    useEffect(() => {
+        if (isMaximized || isMinimized || isAnimatingMinimize || isAnimatingRestore) return;
+
+        const constrainPosition = () => {
+            const maxX = window.innerWidth - size.width;
+            const maxY = window.innerHeight - size.height - taskbarHeight;
+
+            const constrainedX = Math.max(0, Math.min(position.x, maxX));
+            const constrainedY = Math.max(0, Math.min(position.y, maxY));
+
+            if (constrainedX !== position.x || constrainedY !== position.y) {
+                setPosition({ x: constrainedX, y: constrainedY });
+            }
+        };
+
+        // Constrain on mount and when size/viewport changes
+        constrainPosition();
+        window.addEventListener('resize', constrainPosition);
+        return () => window.removeEventListener('resize', constrainPosition);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [size, isMaximized, isMinimized, isAnimatingMinimize, isAnimatingRestore]);
+
     const handleDrag = (e: DraggableEvent, data: DraggableData) => {
         if (isMaximized) return;
 
@@ -195,8 +218,15 @@ export default function Window({
 
             // After a brief moment, animate back to saved position
             setTimeout(() => {
-                setPosition(savedPositionRef.current);
-                setSize(savedSizeRef.current);
+                // Constrain restored position to ensure it doesn't overlap with taskbar
+                const restoredSize = savedSizeRef.current;
+                const maxX = window.innerWidth - restoredSize.width;
+                const maxY = window.innerHeight - restoredSize.height - taskbarHeight;
+                const constrainedX = Math.max(0, Math.min(savedPositionRef.current.x, maxX));
+                const constrainedY = Math.max(0, Math.min(savedPositionRef.current.y, maxY));
+
+                setPosition({ x: constrainedX, y: constrainedY });
+                setSize(restoredSize);
 
                 // Clear animation state after animation completes
                 setTimeout(() => {
