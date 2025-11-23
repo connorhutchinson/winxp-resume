@@ -39,9 +39,9 @@ export default function DesktopIcon({
             {/* Icon Image */}
             <div className={styles.iconImage}>
                 {imageUrl.endsWith('.svg') ? (
-                    <img src={imageUrl} alt={label} width={32} height={32} className={styles.iconImageInner} />
+                    <img src={imageUrl} alt={label} className={styles.iconImageInner} />
                 ) : (
-                    <Image src={imageUrl} alt={label} width={32} height={32} className={styles.iconImageInner} />
+                    <Image src={imageUrl} alt={label} width={40} height={40} className={styles.iconImageInner} />
                 )}
             </div>
 

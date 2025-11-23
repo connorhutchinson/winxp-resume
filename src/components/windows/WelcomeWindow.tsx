@@ -15,35 +15,27 @@ export default function WelcomeWindow({ onClose }: WelcomeWindowProps) {
                 </div>
                 <div className={styles.headerText}>
                     <h1 className={styles.title}>Welcome!</h1>
-                    <p className={styles.subtitle}>Thanks for visiting my resume</p>
+                    <p className={styles.subtitle}>Thanks for visiting my portfolio</p>
                 </div>
             </div>
 
             <div className={styles.content}>
                 <div className={styles.section}>
                     <p className={styles.paragraph}>
-                        Welcome to my interactive resume! I've designed this site to look like Windows XP because it's the operating system I first grew up with. It holds a special place in my heart as the OS that introduced me to computing.
+                        Hi, welcome to my portfolio website!
+                        I'm no pro designer, so I took a few cues from the main OS
+                        I remember growing up with as a kid that got me into computing and made a fun website for me to keep building upon and experimenting with.
                     </p>
                 </div>
 
                 <div className={styles.section}>
-                    <h2 className={styles.sectionTitle}>What you can do here:</h2>
-                    <ul className={styles.featureList}>
-                        <li>
-                            <strong>Chat with my resume</strong> - Double-click the icon to ask questions about my experience and skills
-                        </li>
-                        <li>
-                            <strong>Explore my resume</strong> - View my professional background and qualifications
-                        </li>
-                        <li>
-                            <strong>Contact me</strong> - Get in touch if you'd like to connect
-                        </li>
-                    </ul>
-                </div>
-
-                <div className={styles.section}>
                     <p className={styles.paragraph}>
-                        Feel free to explore around - everything works just like the classic Windows XP interface you remember (or have heard about)! You can drag windows, minimize, maximize, and interact with everything.
+                        Feel free to explore everything. I built this website with some of my favourite frontend tools:
+                        <strong>React</strong>, <strong>Next.js</strong>,
+                        <strong>TypeScript</strong>, <strong>Sass</strong> and <strong>CSS Modules</strong>.
+                        And if you have any questions about my experience and past projects, make sure to chat with me
+                        (it's not me, it's totally an AI wrapper just knowing about my work and dev history but it does at least look like MSN which I know I spent way too much time on)
+                        in the chat app.
                     </p>
                 </div>
 

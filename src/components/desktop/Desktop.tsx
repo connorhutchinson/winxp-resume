@@ -27,6 +27,35 @@ export default function Desktop() {
     const [windows, setWindows] = useState<WindowState[]>([]);
     const [maxZIndex, setMaxZIndex] = useState(1000);
     const [desktopBackground, setDesktopBackground] = useState<string>('/images/background.jpeg');
+    const [loadedBackground, setLoadedBackground] = useState<string | null>(null);
+    const [isImageLoading, setIsImageLoading] = useState(true);
+
+    // Progressive image loading: preload the full image and swap when ready
+    useEffect(() => {
+        const backgroundToLoad = desktopBackground.startsWith('#') ? null : desktopBackground;
+
+        if (backgroundToLoad) {
+            setIsImageLoading(true);
+            // Preload the full-quality image
+            const img = new Image();
+            img.onload = () => {
+                // Small delay to ensure smooth transition
+                setTimeout(() => {
+                    setLoadedBackground(backgroundToLoad);
+                    setIsImageLoading(false);
+                }, 100);
+            };
+            img.onerror = () => {
+                setIsImageLoading(false);
+            };
+            // Start loading the full image
+            img.src = backgroundToLoad;
+        } else {
+            // For solid colors, no loading needed
+            setLoadedBackground(null);
+            setIsImageLoading(false);
+        }
+    }, [desktopBackground]);
 
     // Check if welcome window should be shown on mount and load saved background
     useEffect(() => {
@@ -53,7 +82,7 @@ export default function Desktop() {
     }, []);
 
     const desktopIcons = [
-        { id: 'chat', label: 'Chat with my resume', imageUrl: '/images/pdf.svg' },
+        { id: 'chat', label: 'Messenger', imageUrl: '/images/chat.svg' },
         { id: 'resume', label: 'Resume.pdf', imageUrl: '/images/pdf.svg' },
         { id: 'contact', label: 'Contact Me', imageUrl: '/images/pdf.svg' },
     ];
@@ -222,9 +251,22 @@ export default function Desktop() {
         if (desktopBackground.startsWith('#')) {
             return { backgroundColor: desktopBackground };
         }
-        return {
-            backgroundImage: `url(${desktopBackground})`,
+
+        // Progressive loading: show placeholder while loading, then swap to full quality
+        const styles: React.CSSProperties = {
+            backgroundColor: '#58a6de', // Windows XP default blue as fallback/placeholder
         };
+
+        if (loadedBackground) {
+            // Full quality image is loaded - use it
+            styles.backgroundImage = `url(${loadedBackground})`;
+        } else if (isImageLoading && desktopBackground) {
+            // While loading, show a Windows XP-style gradient placeholder
+            // This provides immediate visual feedback while the full image loads
+            styles.backgroundImage = `linear-gradient(135deg, #58a6de 0%, #4a8bc2 50%, #3d7ba8 100%)`;
+        }
+
+        return styles;
     };
 
     return (
@@ -255,16 +297,20 @@ export default function Desktop() {
                 let initialHeight: number | undefined = undefined;
 
                 if (win.id === WELCOME_WINDOW_ID) {
-                    // Center welcome window on screen
+                    // Center welcome window on screen, ensure it fits on smaller screens
                     if (typeof window !== 'undefined') {
-                        initialX = Math.max(100, (window.innerWidth - 500) / 2);
-                        initialY = Math.max(100, (window.innerHeight - 400) / 2);
+                        const maxWidth = Math.min(500, window.innerWidth - 40);
+                        const maxHeight = Math.min(360, window.innerHeight - 80);
+                        initialX = Math.max(20, (window.innerWidth - maxWidth) / 2);
+                        initialY = Math.max(20, (window.innerHeight - maxHeight) / 2);
+                        initialWidth = maxWidth;
+                        initialHeight = maxHeight;
                     } else {
                         initialX = 150;
                         initialY = 150;
+                        initialWidth = 500;
+                        initialHeight = 360;
                     }
-                    initialWidth = 500;
-                    initialHeight = 400;
                 } else if (win.id === SETTINGS_WINDOW_ID) {
                     // Center settings window on screen
                     if (typeof window !== 'undefined') {
