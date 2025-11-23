@@ -4,11 +4,14 @@ import resumeData from "./resume.json";
 
 export async function POST(req: NextRequest) {
   try {
-    // Simple origin check: only allow requests from localhost (dev) or production domain
+    // Simple origin check: only allow requests from localhost (dev) or production domains
     const host = req.headers.get("host") || "";
     const isLocalhost =
       host.includes("localhost") || host.includes("127.0.0.1");
-    const isProduction = host === "winxp-resume.vercel.app";
+    const isProduction = 
+      host === "winxp-resume.vercel.app" ||
+      host === "connorhutchy.com" ||
+      host === "www.connorhutchy.com";
 
     if (!isLocalhost && !isProduction) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
