@@ -8,6 +8,7 @@ import Window from '../windows/Window';
 import ChatWindow from '../windows/ChatWindow';
 import WelcomeWindow from '../windows/WelcomeWindow';
 import SettingsWindow from '../windows/SettingsWindow';
+import BSOD from '../windows/BSOD';
 
 export interface WindowState {
     id: string;
@@ -29,6 +30,8 @@ export default function Desktop() {
     const [desktopBackground, setDesktopBackground] = useState<string>('/images/background.jpeg');
     const [loadedBackground, setLoadedBackground] = useState<string | null>(null);
     const [isImageLoading, setIsImageLoading] = useState(true);
+    const [showBSOD, setShowBSOD] = useState(false);
+    const [bsodType, setBsodType] = useState<'shutdown' | 'restart'>('shutdown');
 
     // Progressive image loading: preload the full image and swap when ready
     useEffect(() => {
@@ -229,6 +232,20 @@ export default function Desktop() {
         localStorage.setItem(DESKTOP_BACKGROUND_KEY, background);
     };
 
+    const handleShutdown = () => {
+        setBsodType('shutdown');
+        setShowBSOD(true);
+    };
+
+    const handleRestart = () => {
+        setBsodType('restart');
+        setShowBSOD(true);
+    };
+
+    const handleBSODRestore = () => {
+        setShowBSOD(false);
+    };
+
     const getWindowContent = (windowId: string) => {
         switch (windowId) {
             case WELCOME_WINDOW_ID:
@@ -270,95 +287,104 @@ export default function Desktop() {
     };
 
     return (
-        <div
-            className={styles.desktop}
-            style={getDesktopStyle()}
-            onClick={handleDesktopClick}
-        >
-            <div className={styles.iconsContainer}>
-                {desktopIcons.map((icon) => (
-                    <DesktopIcon
-                        key={icon.id}
-                        id={icon.id}
-                        label={icon.label}
-                        imageUrl={icon.imageUrl}
-                        isSelected={selectedIcon === icon.id}
-                        onClick={handleIconClick}
-                        onDoubleClick={handleIconDoubleClick}
-                    />
-                ))}
-            </div>
+        <>
+            {showBSOD && (
+                <BSOD
+                    type={bsodType}
+                    onRestore={handleBSODRestore}
+                />
+            )}
+            <div
+                className={styles.desktop}
+                style={getDesktopStyle()}
+                onClick={handleDesktopClick}
+            >
+                <div className={styles.iconsContainer}>
+                    {desktopIcons.map((icon) => (
+                        <DesktopIcon
+                            key={icon.id}
+                            id={icon.id}
+                            label={icon.label}
+                            imageUrl={icon.imageUrl}
+                            isSelected={selectedIcon === icon.id}
+                            onClick={handleIconClick}
+                            onDoubleClick={handleIconDoubleClick}
+                        />
+                    ))}
+                </div>
 
-            {windows.map((win) => {
-                // Calculate initial position and size
-                let initialX = 100 + windows.indexOf(win) * 30;
-                let initialY = 100 + windows.indexOf(win) * 30;
-                let initialWidth: number | undefined = undefined;
-                let initialHeight: number | undefined = undefined;
+                {windows.map((win) => {
+                    // Calculate initial position and size
+                    let initialX = 100 + windows.indexOf(win) * 30;
+                    let initialY = 100 + windows.indexOf(win) * 30;
+                    let initialWidth: number | undefined = undefined;
+                    let initialHeight: number | undefined = undefined;
 
-                if (win.id === WELCOME_WINDOW_ID) {
-                    // Center welcome window on screen, ensure it fits on smaller screens
-                    if (typeof window !== 'undefined') {
-                        const maxWidth = Math.min(500, window.innerWidth - 40);
-                        const maxHeight = Math.min(360, window.innerHeight - 80);
-                        initialX = Math.max(20, (window.innerWidth - maxWidth) / 2);
-                        initialY = Math.max(20, (window.innerHeight - maxHeight) / 2);
-                        initialWidth = maxWidth;
-                        initialHeight = maxHeight;
-                    } else {
-                        initialX = 150;
-                        initialY = 150;
+                    if (win.id === WELCOME_WINDOW_ID) {
+                        // Center welcome window on screen, ensure it fits on smaller screens
+                        if (typeof window !== 'undefined') {
+                            const maxWidth = Math.min(500, window.innerWidth - 40);
+                            const maxHeight = Math.min(360, window.innerHeight - 80);
+                            initialX = Math.max(20, (window.innerWidth - maxWidth) / 2);
+                            initialY = Math.max(20, (window.innerHeight - maxHeight) / 2);
+                            initialWidth = maxWidth;
+                            initialHeight = maxHeight;
+                        } else {
+                            initialX = 150;
+                            initialY = 150;
+                            initialWidth = 500;
+                            initialHeight = 360;
+                        }
+                    } else if (win.id === SETTINGS_WINDOW_ID) {
+                        // Center settings window on screen
+                        if (typeof window !== 'undefined') {
+                            initialX = Math.max(100, (window.innerWidth - 520) / 2);
+                            initialY = Math.max(100, (window.innerHeight - 580) / 2);
+                        } else {
+                            initialX = 150;
+                            initialY = 150;
+                        }
+                        initialWidth = 520;
+                        initialHeight = 580;
+                    } else if (win.id === 'chat') {
                         initialWidth = 500;
-                        initialHeight = 360;
+                        initialHeight = 400;
                     }
-                } else if (win.id === SETTINGS_WINDOW_ID) {
-                    // Center settings window on screen
-                    if (typeof window !== 'undefined') {
-                        initialX = Math.max(100, (window.innerWidth - 520) / 2);
-                        initialY = Math.max(100, (window.innerHeight - 580) / 2);
-                    } else {
-                        initialX = 150;
-                        initialY = 150;
-                    }
-                    initialWidth = 520;
-                    initialHeight = 580;
-                } else if (win.id === 'chat') {
-                    initialWidth = 500;
-                    initialHeight = 400;
-                }
-                // Resume doesn't open a window - it downloads the PDF
+                    // Resume doesn't open a window - it downloads the PDF
 
-                return (
-                    <Window
-                        key={win.id}
-                        id={win.id}
-                        title={win.title}
-                        isMinimized={win.isMinimized}
-                        isMaximized={win.isMaximized}
-                        zIndex={win.zIndex}
-                        onClose={() => handleWindowClose(win.id)}
-                        onMinimize={() => handleWindowMinimize(win.id)}
-                        onMaximize={() => handleWindowMaximize(win.id)}
-                        onRestore={() => handleWindowRestore(win.id)}
-                        onFocus={() => bringWindowToFront(win.id)}
-                        initialX={initialX}
-                        initialY={initialY}
-                        initialWidth={initialWidth}
-                        initialHeight={initialHeight}
-                    >
-                        {getWindowContent(win.id)}
-                    </Window>
-                );
-            })}
+                    return (
+                        <Window
+                            key={win.id}
+                            id={win.id}
+                            title={win.title}
+                            isMinimized={win.isMinimized}
+                            isMaximized={win.isMaximized}
+                            zIndex={win.zIndex}
+                            onClose={() => handleWindowClose(win.id)}
+                            onMinimize={() => handleWindowMinimize(win.id)}
+                            onMaximize={() => handleWindowMaximize(win.id)}
+                            onRestore={() => handleWindowRestore(win.id)}
+                            onFocus={() => bringWindowToFront(win.id)}
+                            initialX={initialX}
+                            initialY={initialY}
+                            initialWidth={initialWidth}
+                            initialHeight={initialHeight}
+                        >
+                            {getWindowContent(win.id)}
+                        </Window>
+                    );
+                })}
 
-            <Taskbar
-                windows={windows}
-                activeWindowId={getActiveWindowId()}
-                onTaskbarButtonClick={handleTaskbarButtonClick}
-                desktopIcons={startMenuItems}
-                systemLinks={systemLinks}
-                onIconDoubleClick={handleIconDoubleClick}
-            />
-        </div>
+                <Taskbar
+                    windows={windows}
+                    activeWindowId={getActiveWindowId()}
+                    onTaskbarButtonClick={handleTaskbarButtonClick}
+                    desktopIcons={startMenuItems}
+                    systemLinks={systemLinks}
+                    onIconDoubleClick={handleIconDoubleClick}
+                    onShutdown={handleShutdown}
+                />
+            </div>
+        </>
     );
 }

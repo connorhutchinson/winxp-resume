@@ -25,9 +25,10 @@ interface TaskbarProps {
     desktopIcons: DesktopIcon[];
     systemLinks: SystemLink[];
     onIconDoubleClick: (iconId: string) => void;
+    onShutdown?: () => void;
 }
 
-export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons, systemLinks, onIconDoubleClick }: TaskbarProps) {
+export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons, systemLinks, onIconDoubleClick, onShutdown }: TaskbarProps) {
     const [time, setTime] = useState('');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
@@ -127,6 +128,7 @@ export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick,
                 desktopIcons={desktopIcons}
                 systemLinks={systemLinks}
                 onIconClick={onIconDoubleClick}
+                onShutdown={onShutdown}
             />
         </>
     );

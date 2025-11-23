@@ -21,9 +21,10 @@ interface StartMenuProps {
     desktopIcons: DesktopIcon[];
     systemLinks: SystemLink[];
     onIconClick: (iconId: string) => void;
+    onShutdown?: () => void;
 }
 
-export default function StartMenu({ isOpen, onClose, desktopIcons, systemLinks, onIconClick }: StartMenuProps) {
+export default function StartMenu({ isOpen, onClose, desktopIcons, systemLinks, onIconClick, onShutdown }: StartMenuProps) {
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) {
@@ -54,45 +55,68 @@ export default function StartMenu({ isOpen, onClose, desktopIcons, systemLinks, 
                     <span className={styles.userName}>Connor</span>
                 </div>
                 <div className={styles.content}>
-                    <div className={styles.leftColumn}>
-                        {desktopIcons.map((icon) => (
-                            <button
-                                key={icon.id}
-                                className={styles.menuItem}
-                                onClick={() => handleMenuItemClick(icon.id)}
-                            >
-                                <div className={styles.menuIcon}>
-                                    <img
-                                        src={icon.imageUrl}
-                                        alt={icon.label}
-                                        width={20}
-                                        height={20}
-                                    />
-                                </div>
-                                <span className={styles.menuLabel}>{icon.label}</span>
-                            </button>
-                        ))}
-                    </div>
-                    <div className={styles.rightColumn}>
-                        <div className={styles.systemLinks}>
-                            {systemLinks.map((link) => (
+                    <div className={styles.contentRow}>
+                        <div className={styles.leftColumn}>
+                            {desktopIcons.map((icon) => (
                                 <button
-                                    key={link.id}
-                                    className={styles.systemLink}
-                                    onClick={() => handleMenuItemClick(link.id)}
+                                    key={icon.id}
+                                    className={styles.menuItem}
+                                    onClick={() => handleMenuItemClick(icon.id)}
                                 >
-                                    <div className={styles.systemIcon}>
+                                    <div className={styles.menuIcon}>
                                         <img
-                                            src={link.imageUrl}
-                                            alt={link.label}
+                                            src={icon.imageUrl}
+                                            alt={icon.label}
                                             width={20}
                                             height={20}
                                         />
                                     </div>
-                                    <span className={styles.systemLabel}>{link.label}</span>
+                                    <span className={styles.menuLabel}>{icon.label}</span>
                                 </button>
                             ))}
                         </div>
+                        <div className={styles.rightColumn}>
+                            <div className={styles.systemLinks}>
+                                {systemLinks.map((link) => (
+                                    <button
+                                        key={link.id}
+                                        className={styles.systemLink}
+                                        onClick={() => handleMenuItemClick(link.id)}
+                                    >
+                                        <div className={styles.systemIcon}>
+                                            <img
+                                                src={link.imageUrl}
+                                                alt={link.label}
+                                                width={20}
+                                                height={20}
+                                            />
+                                        </div>
+                                        <span className={styles.systemLabel}>{link.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.powerButtons}>
+                        <button
+                            className={styles.powerButton}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onShutdown?.();
+                                onClose();
+                            }}
+                            title="Turn Off Computer"
+                        >
+                            <div className={styles.powerIcon}>
+                                <img
+                                    src="/images/Dtafalonso-Modern-Xp-ModernXP-02-System-Power.512.png"
+                                    alt="Turn Off Computer"
+                                    width={24}
+                                    height={24}
+                                />
+                            </div>
+                            <span className={styles.powerLabel}>Turn Off Computer</span>
+                        </button>
                     </div>
                 </div>
             </div>
