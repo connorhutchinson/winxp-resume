@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './DesktopIcon.module.scss';
 
@@ -20,14 +21,43 @@ export default function DesktopIcon({
     onClick,
     onDoubleClick,
 }: DesktopIconProps) {
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Detect mobile device
+    useEffect(() => {
+        const checkMobile = () => {
+            const isMobileDevice = typeof window !== 'undefined' && (
+                window.innerWidth <= 768 ||
+                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+            );
+            setIsMobile(isMobileDevice);
+        };
+
+        checkMobile();
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', checkMobile);
+            return () => window.removeEventListener('resize', checkMobile);
+        }
+    }, []);
+
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        onClick(id);
+        
+        if (isMobile) {
+            // On mobile, single tap opens the window (no selection needed)
+            onDoubleClick(id);
+        } else {
+            // On desktop, single click selects the icon
+            onClick(id);
+        }
     };
 
     const handleDoubleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        onDoubleClick(id);
+        // Only handle double click on desktop (mobile uses single tap)
+        if (!isMobile) {
+            onDoubleClick(id);
+        }
     };
 
     return (
