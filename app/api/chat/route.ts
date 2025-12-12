@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const host = req.headers.get("host") || "";
     const isLocalhost =
       host.includes("localhost") || host.includes("127.0.0.1");
-    const isProduction = 
+    const isProduction =
       host === "winxp-resume.vercel.app" ||
       host === "connorhutchy.com" ||
       host === "www.connorhutchy.com";
@@ -25,6 +25,31 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Log user message
+    const userIp =
+      req.headers.get("x-forwarded-for") ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    const userAgent = req.headers.get("user-agent") || "unknown";
+    const timestamp = new Date().toISOString();
+
+    console.log(
+      JSON.stringify({
+        type: "chat_message",
+        timestamp,
+        host,
+        userIp: userIp.split(",")[0].trim(), // Get first IP if multiple
+        userAgent,
+        message: message.substring(0, 500), // Limit length for logging
+        messageLength: message.length,
+        hasHistory: !!history && history.length > 0,
+        historyLength: history?.length || 0,
+      })
+    );
+
+    // Store userIp for use in response logging
+    const loggedUserIp = userIp.split(",")[0].trim();
 
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
@@ -79,10 +104,23 @@ export async function POST(req: NextRequest) {
       max_tokens: 1024,
     });
 
-    return NextResponse.json({
-      reply:
-        response.content[0].type === "text" ? response.content[0].text : "",
-    });
+    const reply =
+      response.content[0].type === "text" ? response.content[0].text : "";
+
+    // Log bot response
+    console.log(
+      JSON.stringify({
+        type: "chat_response",
+        timestamp: new Date().toISOString(),
+        host,
+        userIp: loggedUserIp,
+        replyLength: reply.length,
+        replyPreview: reply.substring(0, 200), // First 200 chars for preview
+        tokensUsed: response.usage?.output_tokens || 0,
+      })
+    );
+
+    return NextResponse.json({ reply });
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(
