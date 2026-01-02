@@ -1,10 +1,7 @@
 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-  <!-- Speaker cone -->
-  <path d="M 3 4 L 3 12 L 7 9 L 10 9 L 10 7 L 7 7 Z" fill="#4A4A4A" stroke="#2A2A2A" stroke-width="0.5"/>
-  <path d="M 3 4 L 7 7 L 7 9 L 3 12 Z" fill="#6A6A6A" stroke="#2A2A2A" stroke-width="0.5"/>
+  <!-- Speaker cone - narrow on left, wide on right -->
+  <path d="M 3 6 L 3 10 L 7 12 L 7 4 Z" fill="#4CAF50" stroke="#2E7D32" stroke-width="0.5"/>
   
-  <!-- Sound waves -->
-  <path d="M 11 5 Q 13 6 13 8 Q 13 10 11 11" stroke="#2A2A2A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <path d="M 12 4 Q 14.5 6 14.5 8 Q 14.5 10 12 12" stroke="#2A2A2A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Sound wave ()) shape emanating from right side - thin line -->
+  <path d="M 9 4.5 Q 12 6.5 12 8 Q 12 9.5 9 11.5" stroke="#2E7D32" stroke-width="0.8" fill="none" stroke-linecap="round"/>
 </svg>
-

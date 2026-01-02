@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import styles from './ChatWindow.module.scss';
+import { playMessageChime, playSendWoosh } from '../../utils/sounds';
+import { useAudio } from '../../contexts/AudioContext';
 
 export interface Message {
     id: string;
@@ -12,6 +14,7 @@ export interface Message {
 }
 
 export default function ChatWindow() {
+    const { isMuted } = useAudio();
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
@@ -47,6 +50,11 @@ export default function ChatWindow() {
         setInputValue('');
         setIsLoading(true);
 
+        // Play send woosh sound if not muted
+        if (!isMuted) {
+            playSendWoosh();
+        }
+
         try {
             // Build conversation history (last 10 messages, excluding the current one)
             // This gives context without duplicating the current message
@@ -80,6 +88,11 @@ export default function ChatWindow() {
             };
 
             setMessages((prev) => [...prev, botMessage]);
+
+            // Play message chime when bot responds (if not muted)
+            if (!isMuted) {
+                playMessageChime();
+            }
         } catch (error) {
             console.error('Chat error:', error);
             const errorMessage: Message = {

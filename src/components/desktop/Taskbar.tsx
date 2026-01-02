@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import styles from './Taskbar.module.scss';
 import StartMenu from './StartMenu';
 import { WindowState } from './Desktop';
+import { useAudio } from '../../contexts/AudioContext';
 
 interface DesktopIcon {
     id: string;
@@ -29,6 +30,7 @@ interface TaskbarProps {
 }
 
 export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick, desktopIcons, systemLinks, onIconDoubleClick, onShutdown }: TaskbarProps) {
+    const { isMuted, toggleMute } = useAudio();
     const [time, setTime] = useState('');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
@@ -110,8 +112,8 @@ export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick,
                 </div>
 
                 <div className={styles.systemTray}>
-                    <div className={styles.trayIcon}>
-                        <img src="/images/volume.svg" alt="Volume" width={16} height={16} />
+                    <div className={styles.trayIcon} onClick={(e) => { e.stopPropagation(); toggleMute(); }} style={{ cursor: 'pointer' }}>
+                        <img src={isMuted ? '/images/volume-mute.svg' : '/images/volume.svg'} alt={isMuted ? 'Unmute' : 'Mute'} width={16} height={16} />
                     </div>
                     <div className={styles.trayIcon}>
                         <img src="/images/network.svg" alt="Network" width={16} height={16} />
