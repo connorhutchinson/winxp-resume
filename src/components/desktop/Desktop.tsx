@@ -108,7 +108,6 @@ export default function Desktop() {
 
     const desktopIcons = [
         { id: 'chat', label: 'Chat', imageUrl: '/images/chat.svg' },
-        { id: 'resume', label: 'Resume.pdf', imageUrl: '/images/pdf.svg' },
         { id: 'github', label: 'GitHub', imageUrl: '/images/github-svgrepo-com.svg', externalUrl: 'https://github.com/connorhutchinson' },
         { id: 'linkedin', label: 'LinkedIn', imageUrl: '/images/linkedin-svgrepo-com.svg', externalUrl: 'https://linkedin.com/in/connor-hutchinson' },
     ];
@@ -137,17 +136,6 @@ export default function Desktop() {
         if (externalIcon && externalIcon.externalUrl) {
             // Open external link in new tab
             window.open(externalIcon.externalUrl, '_blank', 'noopener,noreferrer');
-            return;
-        }
-
-        // Handle resume PDF download
-        if (iconId === 'resume') {
-            const link = document.createElement('a');
-            link.href = '/resources/Resume Nov 2025.pdf';
-            link.download = 'Resume Nov 2025.pdf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
             return;
         }
 
@@ -372,7 +360,6 @@ export default function Desktop() {
                         initialWidth = 500;
                         initialHeight = 400;
                     }
-                    // Resume doesn't open a window - it downloads the PDF
 
                     return (
                         <Window
