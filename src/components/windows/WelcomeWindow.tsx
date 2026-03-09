@@ -22,20 +22,17 @@ export default function WelcomeWindow({ onClose }: WelcomeWindowProps) {
             <div className={styles.content}>
                 <div className={styles.section}>
                     <p className={styles.paragraph}>
-                        Hi, welcome to my portfolio website!
-                        I'm no pro designer, so I took a few cues from the main OS
-                        I remember growing up with as a kid that got me into computing and made a fun website for me to keep building upon and experimenting with.
+                        Hi, I'm Connor. Senior dev at Instacart—full stack, from frontend through to .NET and app development.
                     </p>
                 </div>
-
                 <div className={styles.section}>
                     <p className={styles.paragraph}>
-                        Feel free to explore everything. I built this website with some of my favourite frontend tools:
-                        <strong>React</strong>, <strong>Next.js</strong>,
-                        <strong>TypeScript</strong>, <strong>Sass</strong> and <strong>CSS Modules</strong>.
-                        And if you have any questions about my experience and past projects, make sure to chat with me
-                        (it's not me, it's totally an AI wrapper just knowing about my work and dev history but it does at least look like MSN which I know I spent way too much time on)
-                        in the chat app.
+                        I built this site with a WinXP feel, the OS that got me into computing. Have questions about my experience or projects? The chat knows my work.
+                    </p>
+                </div>
+                <div className={styles.section}>
+                    <p className={styles.paragraph}>
+                        When I'm not shipping features at Instacart, I'm tinkering with personal projects, designing and printing 3D models or when winter rolls around, snowboarding.
                     </p>
                 </div>
 

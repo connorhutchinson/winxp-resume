@@ -1,21 +1,27 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import resumeData from "./resume.json";
+import { validateHost } from "../_utils/security";
+
+function getResumeData() {
+  const raw = process.env.RESUME_JSON;
+  if (!raw) {
+    throw new Error("RESUME_JSON environment variable is not set");
+  }
+  try {
+    return JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    throw new Error("RESUME_JSON is invalid JSON");
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
-    // Simple origin check: only allow requests from localhost (dev) or production domains
-    const host = req.headers.get("host") || "";
-    const isLocalhost =
-      host.includes("localhost") || host.includes("127.0.0.1");
-    const isProduction =
-      host === "winxp-resume.vercel.app" ||
-      host === "connorhutchy.com" ||
-      host === "www.connorhutchy.com";
-
-    if (!isLocalhost && !isProduction) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const hostValidation = validateHost(req);
+    if (hostValidation) {
+      return hostValidation;
     }
+
+    const host = req.headers.get("host") || "";
 
     const { message, history } = await req.json();
 
@@ -62,22 +68,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const resumeData = getResumeData();
+
+    const guidelines = resumeData.conversation_guidelines as Record<
+      string,
+      string
+    > | null;
     const systemPrompt = `${resumeData.scope}
-        ${
-          resumeData.conversation_guidelines.tone
-            ? `Tone: ${resumeData.conversation_guidelines.tone}`
-            : ""
-        }
-        ${
-          resumeData.conversation_guidelines.style
-            ? `Style: ${resumeData.conversation_guidelines.style}`
-            : ""
-        }
-        ${
-          resumeData.conversation_guidelines.scope_enforcement
-            ? `Scope: ${resumeData.conversation_guidelines.scope_enforcement}`
-            : ""
-        }
+        ${guidelines?.tone ? `Tone: ${guidelines.tone}` : ""}
+        ${guidelines?.style ? `Style: ${guidelines.style}` : ""}
+        ${guidelines?.scope_enforcement ? `Scope: ${guidelines.scope_enforcement}` : ""}
 
         RESUME DATA:
         ${JSON.stringify(resumeData, null, 2)}

@@ -107,7 +107,7 @@ export default function Desktop() {
     }, []);
 
     const desktopIcons = [
-        { id: 'chat', label: 'Messenger', imageUrl: '/images/chat.svg' },
+        { id: 'chat', label: 'Chat', imageUrl: '/images/chat.svg' },
         { id: 'resume', label: 'Resume.pdf', imageUrl: '/images/pdf.svg' },
         { id: 'github', label: 'GitHub', imageUrl: '/images/github-svgrepo-com.svg', externalUrl: 'https://github.com/connorhutchinson' },
         { id: 'linkedin', label: 'LinkedIn', imageUrl: '/images/linkedin-svgrepo-com.svg', externalUrl: 'https://linkedin.com/in/connor-hutchinson' },
