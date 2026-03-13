@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './Taskbar.module.scss';
 import StartMenu from './StartMenu';
 import { WindowState } from './Desktop';
@@ -33,6 +33,31 @@ export default function Taskbar({ windows, activeWindowId, onTaskbarButtonClick,
     const { isMuted, toggleMute } = useAudio();
     const [time, setTime] = useState('');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
+    const metaKeyPressedAlone = useRef(false);
+
+    // Windows key / Cmd key: toggle Start menu when pressed alone (not with Cmd+C etc.)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Meta' || e.key === 'OS') {
+                metaKeyPressedAlone.current = true;
+            } else {
+                metaKeyPressedAlone.current = false;
+            }
+        };
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if ((e.key === 'Meta' || e.key === 'OS') && metaKeyPressedAlone.current) {
+                e.preventDefault();
+                setIsStartMenuOpen(open => !open);
+            }
+            metaKeyPressedAlone.current = false;
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+        };
+    }, []);
 
     useEffect(() => {
         const updateTime = () => {
