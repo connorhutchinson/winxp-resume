@@ -110,7 +110,7 @@ export default function Desktop() {
         { id: 'chat', label: 'Chat', imageUrl: '/images/chat.svg' },
         { id: 'github', label: 'GitHub', imageUrl: '/images/github-svgrepo-com.svg', externalUrl: 'https://github.com/connorhutchinson' },
         { id: 'linkedin', label: 'LinkedIn', imageUrl: '/images/linkedin-svgrepo-com.svg', externalUrl: 'https://linkedin.com/in/connor-hutchinson' },
-        { id: 'sunroute', label: 'sunroute', imageUrl: '/images/Logo.svg', externalUrl: 'https://sunroute.com' },
+        { id: 'sunroute', label: 'sunroute', imageUrl: '/images/Logo.svg', externalUrl: 'https://sunroute.com.au' },
     ];
 
     const startMenuItems = [
