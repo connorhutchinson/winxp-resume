@@ -6,18 +6,20 @@
   padding: 0.5rem; // p-2
   border-radius: 0.25rem; // rounded
   cursor: pointer;
-  transition: all 200ms;
+  transition: background-color 200ms;
 }
 
 .iconSelected {
   background-color: rgba(51, 153, 255, 0.4);
-  border: 1px dotted white;
+  outline: 1px dotted white;
+  outline-offset: -1px;
 }
 
 .iconUnselected {
   &:hover {
     background-color: rgba(255, 255, 255, 0.3);
-    border: 1px dotted rgba(255, 255, 255, 0.6);
+    outline: 1px dotted rgba(255, 255, 255, 0.6);
+    outline-offset: -1px;
   }
 }
 
@@ -57,4 +59,3 @@
   border-radius: 0.125rem; // rounded-sm
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
-
