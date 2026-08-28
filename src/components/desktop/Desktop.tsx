@@ -9,6 +9,7 @@ import ChatWindow from '../windows/ChatWindow';
 import WelcomeWindow from '../windows/WelcomeWindow';
 import SettingsWindow from '../windows/SettingsWindow';
 import BSOD from '../windows/BSOD';
+import MinesweeperWindow from '../windows/MinesweeperWindow';
 
 export interface WindowState {
     id: string;
@@ -33,6 +34,7 @@ export default function Desktop() {
     const [showBSOD, setShowBSOD] = useState(false);
     const [bsodType, setBsodType] = useState<'shutdown' | 'restart'>('shutdown');
     const [isMobile, setIsMobile] = useState(false);
+    const [minesweeperSize, setMinesweeperSize] = useState({ width: 300, height: 410 });
 
     // Progressive image loading: preload the full image and swap when ready
     useEffect(() => {
@@ -111,6 +113,7 @@ export default function Desktop() {
         { id: 'github', label: 'GitHub', imageUrl: '/images/github-svgrepo-com.svg', externalUrl: 'https://github.com/connorhutchinson' },
         { id: 'linkedin', label: 'LinkedIn', imageUrl: '/images/linkedin-svgrepo-com.svg', externalUrl: 'https://linkedin.com/in/connor-hutchinson' },
         { id: 'sunroute', label: 'sunroute', imageUrl: '/images/Logo.svg', externalUrl: 'https://sunroute.com.au' },
+        { id: 'minesweeper', label: 'Minesweeper', imageUrl: '/images/minesweeper.svg' },
     ];
 
     const startMenuItems = [
@@ -270,6 +273,8 @@ export default function Desktop() {
                 );
             case 'chat':
                 return <ChatWindow />;
+            case 'minesweeper':
+                return <MinesweeperWindow onRequestSize={setMinesweeperSize} />;
             default:
                 return <div>Window content</div>;
         }
@@ -360,6 +365,13 @@ export default function Desktop() {
                     } else if (win.id === 'chat') {
                         initialWidth = 500;
                         initialHeight = 400;
+                    } else if (win.id === 'minesweeper') {
+                        initialWidth = minesweeperSize.width;
+                        initialHeight = minesweeperSize.height;
+                        if (typeof window !== 'undefined') {
+                            initialX = Math.max(20, (window.innerWidth - initialWidth) / 2);
+                            initialY = Math.max(20, (window.innerHeight - initialHeight - 40) / 2);
+                        }
                     }
 
                     return (

@@ -1,0 +1,331 @@
+$face: #c0c0c0;
+$light: #ffffff;
+$dark: #808080;
+$darker: #5a5a5a;
+
+@mixin bevel-out($size: 2px) {
+    border-style: solid;
+    border-width: $size;
+    border-color: $light $dark $dark $light;
+}
+
+@mixin bevel-in($size: 2px) {
+    border-style: solid;
+    border-width: $size;
+    border-color: $dark $light $light $dark;
+}
+
+.minesweeper {
+    margin: -8px;
+    padding: 3px;
+    background: $face;
+    font-family: Tahoma, 'MS Sans Serif', sans-serif;
+    font-size: 11px;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+    user-select: none;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: safe center;
+}
+
+/* ---- menu bar ---- */
+.menuBar {
+    position: relative;
+    display: flex;
+    padding: 1px 0 3px;
+    align-self: stretch;
+    flex: none;
+}
+
+.menuItem {
+    font: inherit;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 1px 6px;
+    cursor: default;
+
+    &:hover {
+        border-color: $light $dark $dark $light;
+    }
+}
+
+.menuDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 20;
+    min-width: 150px;
+    background: $face;
+    @include bevel-out(2px);
+    padding: 2px;
+}
+
+.menuOption {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    font: inherit;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: 3px 8px 3px 4px;
+    cursor: default;
+
+    &:hover {
+        background: #245edc;
+        color: #fff;
+    }
+}
+
+.check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+
+    img {
+        display: block;
+        width: 12px;
+        height: 12px;
+    }
+}
+
+.menuSeparator {
+    height: 0;
+    border-top: 1px solid $dark;
+    border-bottom: 1px solid $light;
+    margin: 2px 1px;
+}
+
+/* ---- outer frame ---- */
+.frame {
+    @include bevel-out(3px);
+    background: $face;
+    padding: 6px;
+    width: max-content;
+    flex: none;
+    // Centered by the parent's `align-items: safe center` — "safe" keeps the
+    // board fully scrollable when it's wider than the window (small screens /
+    // clamped window) instead of clipping the overflow.
+    margin: 0;
+}
+
+.statusBar {
+    @include bevel-in(2px);
+    background: $face;
+    padding: 4px 5px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.counter {
+    @include bevel-in(1px);
+    background: #000;
+    padding: 1px;
+}
+
+.digits {
+    display: flex;
+    line-height: 1;
+}
+
+.digit {
+    position: relative;
+    width: 22px;
+    height: 38px;
+    font-family: 'DSEG7', 'Courier New', monospace;
+    font-size: 34px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.digitOff {
+    position: absolute;
+    inset: 0;
+    color: #3a0000;
+}
+
+.digitOn {
+    position: absolute;
+    inset: 0;
+    color: #ff0000;
+    text-shadow: 0 0 2px rgba(255, 0, 0, 0.6);
+}
+
+.face {
+    width: 44px;
+    height: 44px;
+    @include bevel-out(2px);
+    background: $face;
+    line-height: 1;
+    padding: 0;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        display: block;
+        width: 30px;
+        height: 30px;
+        pointer-events: none;
+    }
+
+    &:active {
+        @include bevel-in(2px);
+    }
+}
+
+/* ---- board ---- */
+.board {
+    @include bevel-in(3px);
+    background: $face;
+    display: grid;
+    gap: 0;
+}
+
+.cell {
+    width: 29px;
+    height: 29px;
+    padding: 0;
+    margin: 0;
+    font-family: Tahoma, sans-serif;
+    font-size: 19px;
+    font-weight: bold;
+    line-height: 29px;
+    text-align: center;
+    background: $face;
+    @include bevel-out(3px);
+    cursor: default;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        display: block;
+        width: 20px;
+        height: 20px;
+        pointer-events: none;
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+}
+
+.revealed {
+    border: 1px solid $dark;
+    border-right-color: #a9a9a9;
+    border-bottom-color: #a9a9a9;
+    background: $face;
+    font-size: 19px;
+}
+
+.mineCell {
+    background: $face;
+}
+
+.exploded {
+    background: #ff0000;
+}
+
+.n1 { color: #0000ff; }
+.n2 { color: #008000; }
+.n3 { color: #ff0000; }
+.n4 { color: #000080; }
+.n5 { color: #800000; }
+.n6 { color: #008080; }
+.n7 { color: #000000; }
+.n8 { color: #808080; }
+
+/* ---- win / lose dialog ---- */
+.dialogOverlay {
+    // `fixed` (not `absolute`) so it covers the whole window even when the
+    // board is scrolled inside it — the host <Window> is always `transform`ed,
+    // which contains this to the window rather than the viewport.
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30;
+}
+
+.dialog {
+    width: 240px;
+    max-width: calc(100% - 24px);
+    background: $face;
+    @include bevel-out(2px);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+.dialogTitleBar {
+    background: linear-gradient(to bottom, #0a53d4 0%, #2e77e6 50%, #0a53d4 100%);
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 3px 6px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.dialogBody {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 14px 12px;
+}
+
+.dialogIcon {
+    flex-shrink: 0;
+    line-height: 1;
+
+    img {
+        display: block;
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.dialogText {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+        font-size: 12px;
+    }
+
+    span {
+        color: #333;
+    }
+}
+
+.dialogButtons {
+    display: flex;
+    justify-content: center;
+    padding: 0 12px 14px;
+}
+
+.dialogButton {
+    min-width: 90px;
+    height: 23px;
+    font: inherit;
+    background: linear-gradient(to bottom, #f4f4f4 0%, #dcdcdc 100%);
+    @include bevel-out(2px);
+    border-radius: 3px;
+    cursor: default;
+
+    &:active {
+        @include bevel-in(2px);
+    }
+}

@@ -57,7 +57,8 @@ export default function Window({
     // Detect mobile device
     useEffect(() => {
         const checkMobile = () => {
-            const isMobileDevice = window.innerWidth <= 768 ||
+            const isMobileDevice =
+                window.innerWidth <= 768 ||
                 /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             setIsMobile(isMobileDevice);
         };
@@ -66,6 +67,15 @@ export default function Window({
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
+
+    // Adopt externally-driven size changes, ignored while maximized / mobile /
+    // animating so it doesn't fight those layouts.
+    useEffect(() => {
+        if (isMaximized || isMobile || isAnimatingMinimize || isAnimatingRestore) return;
+        setSize({ width: initialWidth, height: initialHeight });
+        savedSizeRef.current = { width: initialWidth, height: initialHeight };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialWidth, initialHeight]);
 
     // Constrain window position to ensure it doesn't overlap with taskbar
     useEffect(() => {
@@ -143,9 +153,7 @@ export default function Window({
             savedSizeRef.current = { ...size };
             savedPositionRef.current = { ...position };
             // Maximize - use dynamic viewport height on mobile to account for browser UI
-            const viewportHeight = isMobile
-                ? window.visualViewport?.height || window.innerHeight
-                : window.innerHeight;
+            const viewportHeight = isMobile ? window.visualViewport?.height || window.innerHeight : window.innerHeight;
             setSize({
                 width: window.innerWidth,
                 height: viewportHeight - taskbarHeight,
@@ -194,7 +202,7 @@ export default function Window({
             // Animate to taskbar position (small size near bottom)
             setPosition({
                 x: taskbarButtonX,
-                y: taskbarButtonY - 10 // Slightly above taskbar
+                y: taskbarButtonY - 10, // Slightly above taskbar
             });
             setSize({ width: 1, height: 1 });
 
@@ -215,7 +223,7 @@ export default function Window({
 
             setPosition({
                 x: taskbarButtonX,
-                y: taskbarButtonY - 10
+                y: taskbarButtonY - 10,
             });
             setSize({ width: 1, height: 1 });
 
@@ -253,7 +261,9 @@ export default function Window({
         isAnimatingRestore ? styles.restoring : '',
         isDragging ? styles.dragging : '',
         isMobile ? styles.mobile : '',
-    ].filter(Boolean).join(' ');
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     return (
         <Draggable
@@ -270,9 +280,10 @@ export default function Window({
                 className={windowClasses}
                 style={{
                     width: isMobile || isMaximized ? '100vw' : `${size.width}px`,
-                    height: isMobile || isMaximized
-                        ? undefined // Let CSS handle it with top/bottom positioning
-                        : `${size.height}px`,
+                    height:
+                        isMobile || isMaximized
+                            ? undefined // Let CSS handle it with top/bottom positioning
+                            : `${size.height}px`,
                     ...(isMobile && {
                         bottom: `calc(${taskbarHeight}px + env(safe-area-inset-bottom, 0px))`,
                         right: 0,
@@ -287,11 +298,7 @@ export default function Window({
                 <div className={`${styles.titleBar} window-title-bar`}>
                     <span className={styles.title}>{title}</span>
                     <div className={styles.windowControls}>
-                        <button
-                            className={styles.controlButton}
-                            onClick={handleMinimize}
-                            aria-label="Minimize"
-                        >
+                        <button className={styles.controlButton} onClick={handleMinimize} aria-label="Minimize">
                             <img src="/images/minimize.svg" alt="Minimize" width={12} height={12} />
                         </button>
                         <button
@@ -302,8 +309,8 @@ export default function Window({
                             style={isMobile && isMaximized ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
                         >
                             <img
-                                src={isMaximized ? "/images/restore.svg" : "/images/maximize.svg"}
-                                alt={isMaximized ? "Restore" : "Maximize"}
+                                src={isMaximized ? '/images/restore.svg' : '/images/maximize.svg'}
+                                alt={isMaximized ? 'Restore' : 'Maximize'}
                                 width={12}
                                 height={12}
                             />
@@ -322,4 +329,3 @@ export default function Window({
         </Draggable>
     );
 }
-
