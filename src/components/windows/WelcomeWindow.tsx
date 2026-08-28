@@ -22,17 +22,22 @@ export default function WelcomeWindow({ onClose }: WelcomeWindowProps) {
             <div className={styles.content}>
                 <div className={styles.section}>
                     <p className={styles.paragraph}>
-                        Hi, I'm Connor. Senior dev at Instacart—full stack, from frontend through to .NET and app development.
+                        Hi, I'm Connor. Senior dev at Instacart—full stack, from frontend through to .NET and app
+                        development.
                     </p>
                 </div>
                 <div className={styles.section}>
                     <p className={styles.paragraph}>
-                        I built this site with a WinXP feel, the OS that got me into computing. Have questions about my experience or projects? The chat knows my work.
+                        I built this site with a Windows XP feel, the OS that got me into computing, it's here for me to
+                        experiment and have fun building new things and showcase them at the same time. Have questions
+                        about my experience or other projects? The chat knows all. Just ask it anything and it will
+                        answer with information from my resume and portfolio.
                     </p>
                 </div>
                 <div className={styles.section}>
                     <p className={styles.paragraph}>
-                        When I'm not shipping features at Instacart, I'm tinkering with personal projects, designing and printing 3D models or when winter rolls around, snowboarding.
+                        When I'm not shipping features at Instacart, I'm tinkering with personal projects, designing and
+                        printing 3D models or when winter rolls around, snowboarding.
                     </p>
                 </div>
 
@@ -51,4 +56,3 @@ export default function WelcomeWindow({ onClose }: WelcomeWindowProps) {
         </div>
     );
 }
-
