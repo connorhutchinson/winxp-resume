@@ -86,7 +86,7 @@ export const previousExperience = [
 
 export const skills = [
     { group: 'Backend', items: ['C#', '.NET (Framework through .NET 10)', 'ASP.NET', 'SQL Server', 'REST APIs', 'Node.js/TypeScript'] },
-    { group: 'Frontend and mobile', items: ['TypeScript/JavaScript', 'React', 'Jest', 'Cypress', 'React Native', 'Swift (iOS)'] },
+    { group: 'Frontend and mobile', items: ['TypeScript/JavaScript', 'React', 'Jest', 'Cypress', 'React Native', 'Swift (iOS)', 'Kotlin (Android)'] },
     { group: 'Cloud and tooling', items: ['Azure (App Insights, KQL, DevOps pipelines)', 'AWS', 'Docker', 'CI/CD', 'Supabase', 'Vercel'] },
     { group: 'Practices', items: ['On-call and incident response', 'Observability', 'Root-cause analysis', 'Design and code review'] },
 ];
@@ -109,9 +109,9 @@ export const projects = [
         name: 'sunroute',
         url: 'https://sunroute.com.au/',
         description:
-            'iOS and Android app for sharing scenic driving routes. Apple and Google sign-in and maps, Supabase ' +
-            'backend for database, auth and storage. In final testing before launch.',
-        stack: ['React Native', 'Swift', 'Supabase'],
+            'iOS and Android app for sharing scenic driving routes, built natively for each platform. Apple and ' +
+            'Google sign-in and maps, Supabase backend for database, auth and storage. In final testing before launch.',
+        stack: ['Swift (SwiftUI)', 'Kotlin (Jetpack Compose)', 'Supabase'],
         status: 'Pre-launch',
     },
     {
