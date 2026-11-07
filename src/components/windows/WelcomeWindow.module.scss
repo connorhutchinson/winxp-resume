@@ -179,3 +179,52 @@
   }
 }
 
+// Scale text and buttons up a bit on desktop, where the original
+// XP-era 11px sizing reads as too small on larger screens.
+@media (min-width: 769px) {
+  .welcomeWindow {
+    font-size: 13px;
+  }
+
+  .icon {
+    width: 46px;
+    height: 46px;
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .title {
+    font-size: 19px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .sectionTitle {
+    font-size: 14px;
+  }
+
+  .paragraph {
+    font-size: 13px;
+  }
+
+  .featureList li {
+    font-size: 13px;
+
+    &::before {
+      font-size: 16px;
+    }
+  }
+
+  .okButton {
+    min-width: 88px;
+    height: 27px;
+    font-size: 13px;
+    padding: 0 14px;
+  }
+}
+

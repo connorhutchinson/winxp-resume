@@ -59,3 +59,19 @@
   border-radius: 0.125rem; // rounded-sm
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
+
+// Scale icons and labels up a bit on desktop (see WelcomeWindow.module.scss)
+@media (min-width: 769px) {
+  .icon {
+    width: 5.75rem;
+  }
+
+  .iconImage {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .iconLabel {
+    font-size: 13px;
+  }
+}

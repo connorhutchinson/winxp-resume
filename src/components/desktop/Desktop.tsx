@@ -354,11 +354,16 @@ export default function Desktop() {
                     let initialWidth: number | undefined = undefined;
                     let initialHeight: number | undefined = undefined;
 
+                    // Default windows read a little small on a big desktop screen,
+                    // so scale their base sizes up a bit there (mobile stays as-is,
+                    // since it already maximizes windows to full screen).
+                    const sizeScale = isMobile ? 1 : 1.12;
+
                     if (win.id === WELCOME_WINDOW_ID) {
                         // Center welcome window on screen, ensure it fits on smaller screens
                         if (typeof window !== 'undefined') {
-                            const maxWidth = Math.min(500, window.innerWidth - 40);
-                            const maxHeight = Math.min(360, window.innerHeight - 80);
+                            const maxWidth = Math.min(500 * sizeScale, window.innerWidth - 40);
+                            const maxHeight = Math.min(360 * sizeScale, window.innerHeight - 80);
                             initialX = Math.max(20, (window.innerWidth - maxWidth) / 2);
                             initialY = Math.max(20, (window.innerHeight - maxHeight) / 2);
                             initialWidth = maxWidth;
@@ -370,19 +375,19 @@ export default function Desktop() {
                             initialHeight = 360;
                         }
                     } else if (win.id === SETTINGS_WINDOW_ID) {
+                        initialWidth = 520 * sizeScale;
+                        initialHeight = 580 * sizeScale;
                         // Center settings window on screen
                         if (typeof window !== 'undefined') {
-                            initialX = Math.max(100, (window.innerWidth - 520) / 2);
-                            initialY = Math.max(100, (window.innerHeight - 580) / 2);
+                            initialX = Math.max(100, (window.innerWidth - initialWidth) / 2);
+                            initialY = Math.max(100, (window.innerHeight - initialHeight) / 2);
                         } else {
                             initialX = 150;
                             initialY = 150;
                         }
-                        initialWidth = 520;
-                        initialHeight = 580;
                     } else if (win.id === 'chat') {
-                        initialWidth = 500;
-                        initialHeight = 400;
+                        initialWidth = 500 * sizeScale;
+                        initialHeight = 400 * sizeScale;
                     } else if (win.id === 'minesweeper') {
                         initialWidth = minesweeperSize.width;
                         initialHeight = minesweeperSize.height;

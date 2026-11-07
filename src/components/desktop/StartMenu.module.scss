@@ -234,3 +234,49 @@
     text-overflow: ellipsis;
   }
 }
+
+// Scale up a bit on desktop (see WelcomeWindow.module.scss)
+@media (min-width: 769px) {
+  .startMenu {
+    width: 320px;
+  }
+
+  .userName {
+    font-size: 16px;
+  }
+
+  .menuItem,
+  .systemLink {
+    font-size: 13px;
+    padding: 8px 14px;
+
+    .menuIcon,
+    .systemIcon {
+      width: 23px;
+      height: 23px;
+
+      img {
+        width: 23px;
+        height: 23px;
+      }
+    }
+  }
+
+  .powerButton {
+    font-size: 12px;
+
+    .powerIcon {
+      width: 27px;
+      height: 27px;
+
+      img {
+        width: 27px;
+        height: 27px;
+      }
+    }
+
+    .powerLabel {
+      font-size: 12px;
+    }
+  }
+}

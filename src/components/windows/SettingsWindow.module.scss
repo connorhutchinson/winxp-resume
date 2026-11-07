@@ -225,3 +225,27 @@
     background: linear-gradient(to bottom, #d8d8d8 0%, #f0f0f0 100%);
   }
 }
+
+// Scale text and buttons up a bit on desktop (see WelcomeWindow.module.scss)
+@media (min-width: 769px) {
+  .title {
+    font-size: 15px;
+  }
+
+  .tab {
+    font-size: 13px;
+    padding: 7px 18px;
+  }
+
+  .label,
+  .select,
+  .currentInfo {
+    font-size: 13px;
+  }
+
+  .button {
+    font-size: 13px;
+    padding: 6px 18px;
+    min-width: 85px;
+  }
+}

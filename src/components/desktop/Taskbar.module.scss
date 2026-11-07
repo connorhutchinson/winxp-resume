@@ -169,3 +169,20 @@
   font-size: 11px;
   font-weight: bold;
 }
+
+// Scale text up a bit on desktop (see WelcomeWindow.module.scss).
+// Taskbar height stays 40px - it's hardcoded in Window.tsx's drag/resize bounds.
+@media (min-width: 769px) {
+  .startButton,
+  .taskbarButton,
+  .systemTray,
+  .time {
+    font-size: 13px;
+  }
+
+  .taskbarButton .buttonIcon,
+  .taskbarButton .buttonIcon img {
+    width: 18px;
+    height: 18px;
+  }
+}
