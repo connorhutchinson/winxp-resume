@@ -46,23 +46,19 @@ export const currentRole = {
             "database logic, frontend, test plan, QA coordination and support training (design aside). Shipped " +
             "ahead of the Thanksgiving peak and saw meaningful adoption in early rollout.",
         "Owned the final migration of dozens of clients from legacy custom-built storefronts to a self-serve " +
-            "generic storefront, deleting 250+ source files, whole projects and the legacy cart repositories. " +
+            "generic storefront, deleting hundreds of source files, whole projects and the legacy cart repositories. " +
             "Contributed to the proof of concept moving the .NET Framework admin app to modern .NET (now .NET 10), " +
             "including its first Mac-native rendering.",
         "Cut production noise by using Claude to triage telemetry: frontend exceptions down ~99.8%, trace volume " +
             "halved (cutting storage costs), and failed-request logs usable again after expected 401s (98.6% of " +
             "volume) were filtered. Alerts were moved to success-based signals first. Separately enabled gzip on " +
             "static assets (~75% smaller JS/CSS).",
-        "Declared and ran the response to a duplicate-processing incident over Thanksgiving peak (two workers " +
-            "processing the same job, affecting two high-volume clients), found through manual payment tracking: " +
-            "set up the response channel and call, assigned action groups, and built automated refunds while " +
-            "infrastructure shut the worker down.",
         "Built the alerting and monitoring channel for order and item sync between two platforms after the root-" +
             "cause analysis of a critical integration failure; it has caught broken new-client setups and lets " +
             "partner teams self-diagnose without engineering.",
-        "On support rotation: cleared the backlog from 50+ to under 15 tickets in under two weeks (50+ to under " +
-            "30 in a second rotation), closing 21%+ of resolved bugs on the team; shipped 24 deploys with no " +
-            "production rollbacks; rolled back and fixed an overnight storefront pricing defect within 30 minutes.",
+        "On support rotation: cleared a large ticket backlog down to a handful within two weeks, closing a " +
+            "meaningful share of the team's resolved bugs; shipped dozens of deploys with no production rollbacks; " +
+            "rolled back and fixed an overnight storefront pricing defect within 30 minutes.",
         "Sole FoodStorm contact for two cross-product projects (item packs, colour and image sync) with Instacart " +
             "teams on separate products and repositories, from design through rollout, drawing on deep knowledge " +
             "of FoodStorm's inbound and outbound APIs; fixed catalog and order flows directly in Instacart's Ruby " +
