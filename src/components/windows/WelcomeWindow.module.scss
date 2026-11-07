@@ -149,6 +149,10 @@
 }
 
 .okButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   min-width: 75px;
   height: 23px;
   background: linear-gradient(to bottom, #e8e8e8 0%, #d4d4d4 100%);
@@ -158,6 +162,8 @@
   font-size: 11px;
   font-weight: normal;
   font-family: Tahoma, sans-serif;
+  text-decoration: none;
+  line-height: 1;
   cursor: pointer;
   padding: 0 12px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);

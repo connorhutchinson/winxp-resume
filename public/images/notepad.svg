@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pad body -->
+  <path d="M6 3 H22 L26 7 V29 H6 Z" fill="#FFFDE7" stroke="#8a7a3a" stroke-width="1"/>
+  <!-- Folded corner -->
+  <path d="M22 3 L22 7 H26 Z" fill="#E8DFA0" stroke="#8a7a3a" stroke-width="1"/>
+  <!-- Red binding strip -->
+  <rect x="6" y="3" width="3.5" height="26" fill="#D64545"/>
+  <!-- Ruled lines -->
+  <line x1="12" y1="11" x2="23" y2="11" stroke="#9FB6D9" stroke-width="1"/>
+  <line x1="12" y1="15" x2="23" y2="15" stroke="#9FB6D9" stroke-width="1"/>
+  <line x1="12" y1="19" x2="23" y2="19" stroke="#9FB6D9" stroke-width="1"/>
+  <line x1="12" y1="23" x2="19" y2="23" stroke="#9FB6D9" stroke-width="1"/>
+  <!-- Pencil -->
+  <g transform="rotate(45 24 20)">
+    <rect x="22.5" y="9" width="3" height="16" rx="1" fill="#F2C94C" stroke="#8a6d1a" stroke-width="0.5"/>
+    <path d="M22.5 9 L24 6 L25.5 9 Z" fill="#E0A030" stroke="#8a6d1a" stroke-width="0.5"/>
+    <rect x="22.5" y="23" width="3" height="2.5" fill="#D64545"/>
+  </g>
+</svg>

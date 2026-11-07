@@ -34,14 +34,12 @@ yarn-error.log*
 .env*
 !.env.example
 
-# Resume data - contains personal info, use RESUME_JSON env var instead
-app/api/chat/resume.json
-
-# Resume PDF - personal info, host externally if needed
-public/resources/*.pdf
-
 # vercel
 .vercel
+
+# working/scratch material, not site content
+/handoff/
+/Claude outputs/
 
 # typescript
 *.tsbuildinfo

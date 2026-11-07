@@ -10,6 +10,7 @@ import WelcomeWindow from '../windows/WelcomeWindow';
 import SettingsWindow from '../windows/SettingsWindow';
 import BSOD from '../windows/BSOD';
 import MinesweeperWindow from '../windows/MinesweeperWindow';
+import { resumePdfPath } from '../../data/resume';
 
 export interface WindowState {
     id: string;
@@ -110,6 +111,7 @@ export default function Desktop() {
 
     const desktopIcons = [
         { id: 'chat', label: 'Chat', imageUrl: '/images/chat.svg' },
+        { id: 'resume', label: 'Resume', imageUrl: '/images/pdf.svg' },
         { id: 'github', label: 'GitHub', imageUrl: '/images/github-svgrepo-com.svg', externalUrl: 'https://github.com/connorhutchinson' },
         { id: 'linkedin', label: 'LinkedIn', imageUrl: '/images/linkedin-svgrepo-com.svg', externalUrl: 'https://linkedin.com/in/connor-hutchinson' },
         { id: 'sunroute', label: 'sunroute', imageUrl: '/images/Logo.svg', externalUrl: 'https://sunroute.com.au' },
@@ -118,7 +120,7 @@ export default function Desktop() {
 
     const startMenuItems = [
         ...desktopIcons,
-        { id: WELCOME_WINDOW_ID, label: 'Welcome', imageUrl: '/images/pdf.svg' },
+        { id: WELCOME_WINDOW_ID, label: 'Welcome', imageUrl: '/images/notepad.svg' },
     ];
 
     const systemLinks = [
@@ -134,6 +136,14 @@ export default function Desktop() {
     };
 
     const handleIconDoubleClick = (iconId: string) => {
+        if (iconId === 'resume') {
+            const link = document.createElement('a');
+            link.href = resumePdfPath;
+            link.download = '';
+            link.click();
+            return;
+        }
+
         // Check if this is an external link icon (GitHub, LinkedIn)
         const externalIcon = desktopIcons.find(i => i.id === iconId && i.externalUrl);
 
@@ -263,7 +273,15 @@ export default function Desktop() {
     const getWindowContent = (windowId: string) => {
         switch (windowId) {
             case WELCOME_WINDOW_ID:
-                return <WelcomeWindow onClose={() => handleWindowClose(WELCOME_WINDOW_ID)} />;
+                return (
+                    <WelcomeWindow
+                        onClose={() => handleWindowClose(WELCOME_WINDOW_ID)}
+                        onOpenChat={() => {
+                            handleWindowClose(WELCOME_WINDOW_ID);
+                            handleIconDoubleClick('chat');
+                        }}
+                    />
+                );
             case SETTINGS_WINDOW_ID:
                 return (
                     <SettingsWindow
