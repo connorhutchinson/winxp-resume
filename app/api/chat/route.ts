@@ -11,6 +11,7 @@ import {
   coursesAndCertifications,
   projects,
   personality,
+  siteNotes,
   conversationGuidelines,
 } from "../../../src/data/resume";
 
@@ -25,6 +26,7 @@ function getResumeData() {
     coursesAndCertifications,
     projects,
     personality,
+    siteNotes,
   };
 }
 

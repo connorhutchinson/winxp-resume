@@ -111,8 +111,19 @@ export const projects = [
         description:
             'iOS and Android app for sharing scenic driving routes, built natively for each platform. Apple and ' +
             'Google sign-in and maps, Supabase backend for database, auth and storage. In final testing before launch.',
-        stack: ['Swift (SwiftUI)', 'Kotlin (Jetpack Compose)', 'Supabase'],
+        stack: ['Swift (SwiftUI)', 'Kotlin (Jetpack Compose)', 'Supabase', 'Next.js'],
         status: 'Pre-launch',
+        highlights: [
+            'Native iOS (SwiftUI) and Android (Kotlin/Jetpack Compose) apps sharing one Supabase/Postgres backend ' +
+                'secured with row-level security, plus a Next.js marketing site. Xcode Cloud CI/CD and MetricKit ' +
+                'crash/performance monitoring in production.',
+            'Built real-time turn-by-turn navigation (MapKit) with off-route detection, plus custom algorithms for ' +
+                'zoom-adaptive map rendering: Ramer-Douglas-Peucker polyline simplification and grid-based route clustering.',
+            'Built a GPS drive-simulation framework (synthetic location playback across 6 scenarios) to test ' +
+                'navigation logic without physically driving routes.',
+            'Built a password-protected admin web tool for reviewing and moderating user-submitted routes, with ' +
+                'server-verified sessions and an interactive map for approval.',
+        ],
     },
     {
         id: 'retrogpt',
@@ -122,6 +133,7 @@ export const projects = [
             'A small, finished side project: chat with an AI assistant through an 80s-style terminal UI.',
         stack: ['.NET', 'React', 'TypeScript', 'Docker'],
         status: 'Complete',
+        highlights: [] as string[],
     },
 ];
 
@@ -136,6 +148,12 @@ export const personality = {
         'Snowboarding',
     ],
 };
+
+export const siteNotes =
+    "This site is itself a small full-stack build: a Next.js 16 app rendering a working Windows XP desktop " +
+    "(draggable windows, a Minesweeper clone, a Start menu) with ConnorBot, a Claude-powered chat assistant " +
+    "answering from this same resume data. Despite the retro UI, the content is server-rendered and crawlable " +
+    "(see this /resume page), with sitemap, robots.txt and structured data for search engines and ATS tools.";
 
 export const conversationGuidelines = {
     tone: 'Friendly, enthusiastic and professional, like MSN Messenger chat in the 2000s',

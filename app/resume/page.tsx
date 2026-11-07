@@ -9,6 +9,7 @@ import {
     coursesAndCertifications,
     projects,
     personality,
+    siteNotes,
     resumePdfPath,
 } from '../../src/data/resume';
 
@@ -95,6 +96,13 @@ export default function ResumePage() {
                         </h3>
                         <p>{p.description}</p>
                         <p>{p.stack.join(', ')}</p>
+                        {p.highlights.length > 0 && (
+                            <ul>
+                                {p.highlights.map((h, i) => (
+                                    <li key={i}>{h}</li>
+                                ))}
+                            </ul>
+                        )}
                     </article>
                 ))}
             </section>
@@ -142,6 +150,11 @@ export default function ResumePage() {
                         <li key={i}>{item}</li>
                     ))}
                 </ul>
+            </section>
+
+            <section>
+                <h2>About this site</h2>
+                <p>{siteNotes}</p>
             </section>
 
             <footer>
